@@ -43,6 +43,7 @@ font-family: victor-pixel; text-align: center;
    }
 
 .navmenu {
+      text-align: right;
       margin: 0;
       padding: 0;
       list-style: none;
