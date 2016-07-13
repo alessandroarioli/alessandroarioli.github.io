@@ -48,3 +48,113 @@ font-family: victor-pixel; text-align: center;
       padding: 0;
       list-style: none;
       float: left; }
+
+@import url(http://fonts.googleapis.com/css?family=Lato);
+@import url(http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css);
+
+
+body {
+  font-family: 'Lato', sans-serif;
+  color: #FFF;
+  background: #322f30;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+	text-decoration: none;
+	color: #fff;
+}
+
+p > a:hover{
+	color: #d9d9d9;
+	text-decoration:  underline;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	margin:  1% 0 1% 0;
+}
+
+
+
+._12 {
+	font-size: 1.2em;
+
+}
+
+._14 {
+	font-size: 1.4em;
+
+}
+
+ul {
+	padding:0;
+	list-style: none;
+}
+
+@import url('//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css');
+
+#social {
+  margin: 20px 10px;
+  text-align: center;
+}
+
+.smGlobalBtn{ /* global button class */
+    display: inline-block;
+    position: relative;
+    cursor: pointer;
+    width: 50px;
+    height: 50px;
+    box-shadow: 0 2px 2px #999;
+    padding: 0px;
+    text-decoration: none;
+    text-align: center;
+    color: #fff;
+    font-size: 25px;
+    font-weight: normal;
+    line-height: 2em;
+    border-radius: 25px;
+    -moz-border-radius:25px;
+    -webkit-border-radius:25px;
+}
+
+/* google plus button class*/
+.googleplusBtn{
+  background: url("./Gplus.png") no-repeat;
+  background-size: 100%;
+}
+
+.googleplusBtn:before{
+      font-family: "FontAwesome";
+}
+
+.googleplusBtn:hover{
+      background: url("./google-plus-icon.png") no-repeat;
+      background-size: 100%;
+}
+
+/* linkedin button class*/
+.linkedinBtn{
+  background: url("./Linkedin_hover.png") no-repeat;
+  background-size: 100%;
+}
+
+.linkedinBtn:hover{
+  background: url("./Linkedin.png") no-repeat;
+  background-size: 100%;
+}
+
+/* rss button class*/
+.rssBtn{
+  background: url("./email.png") no-repeat;
+  background-size: 100%;
+}
+
+.rssBtn:hover{
+  background: url("./email-icon.png") no-repeat;
+  background-size: 100%;
+}
