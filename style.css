@@ -158,3 +158,13 @@ ul {
   background: url("./email-icon.png") no-repeat;
   background-size: 100%;
 }
+
+.githubBtn{
+  background: url("./github-icon.png") no-repeat;
+  background-size: 100%;
+}
+.githubBtn:hover{
+  background: url("./github.png") no-repeat;
+  background-size: 100%;
+
+}
