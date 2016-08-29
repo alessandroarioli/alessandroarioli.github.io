@@ -33,7 +33,7 @@ font-family: victor-pixel; text-align: center;
 
   .date {
     border: 2px solid black;
-    width: 20%;
+    width: 30%;
   }
 
 .navcontainer {
@@ -54,6 +54,8 @@ font-family: victor-pixel; text-align: center;
 
 
 body {
+  margin: 30px;
+  padding: 30px;
   font-family: 'Lato', sans-serif;
   color: #FFF;
   background: #322f30;
