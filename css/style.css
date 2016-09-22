@@ -100,6 +100,8 @@ font-family: victor-pixel; text-align: center;
 
 body {
     background: url("../icons/code_wall.jpg");
+    top right no-repeat;
+    background-attachment:fixed;
 }
 
 a {
