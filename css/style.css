@@ -3,13 +3,24 @@ h1, h2, h3,ul, .circular, .navcontainer{
 font-family: victor-pixel; text-align: center;
 }
 
+.main {
+  opacity: 0.90;
+  margin: 50px;
+  font-family: 'Lato', sans-serif;
+  color: #FFF;
+  background: #000000;
+  -webkit-font-smoothing: antialiased;
+  border-radius: 50px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, .8);
+}
+
 .circular {
         width: 300px;
         height: 300px;
 		border-radius: 150px;
 		-webkit-border-radius: 150px;
 		-moz-border-radius: 150px;
-		box-shadow: 0 0 8px rgba(0, 0, 0, .8);
+		box-shadow: 0 0 20px rgba(0, 0, 0, .8);
 		background: url("../icons/myself.jpg") no-repeat;
     background-size: 100%;
 		-webkit-box-shadow: 0 0 8px rgba(0, 0, 0, .8);
@@ -48,7 +59,7 @@ font-family: victor-pixel; text-align: center;
   overflow: hidden;
   text-indent: 100%;
   white-space: nowrap;
-  background: rgba(0,0,255,0.3) url(../icons/cd-top-arrow.svg) no-repeat center 50%;
+  background: #000000 url(../icons/cd-top-arrow.svg) no-repeat center 50%;
   visibility: hidden;
   opacity: 0;
   -webkit-transition: opacity .3s 0s, visibility 0s .3s;
@@ -88,12 +99,7 @@ font-family: victor-pixel; text-align: center;
 
 
 body {
-  margin: 30px;
-  padding: 30px;
-  font-family: 'Lato', sans-serif;
-  color: #FFF;
-  background: #322f30;
-  -webkit-font-smoothing: antialiased;
+    background: url("../icons/code_wall.jpg");
 }
 
 a {
