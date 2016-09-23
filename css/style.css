@@ -27,8 +27,16 @@ font-family: victor-pixel; text-align: center;
 		-moz-box-shadow: 0 0 8px rgba(0, 0, 0, .8);
 	}
 
+.fixed {
+      opacity: 0.90;
+      position:fixed;
+      top:0;
+    }
+
+#mynavbar {
+  width: 90%;
+}
 #navbarPrimary {
-  width: 100%;
   color: #ffffff;
   background-color: transparent;
   border-color: transparent;
