@@ -4,7 +4,7 @@ font-family: victor-pixel; text-align: center;
 }
 
 .main {
-  opacity: 0.90;
+  opacity: 0.95;
   margin: 50px;
   font-family: 'Lato', sans-serif;
   color: #FFF;
@@ -15,8 +15,8 @@ font-family: victor-pixel; text-align: center;
 }
 
 .circular {
-        width: 300px;
-        height: 300px;
+    width: 300px;
+    height: 300px;
 		border-radius: 150px;
 		-webkit-border-radius: 150px;
 		-moz-border-radius: 150px;
@@ -108,7 +108,7 @@ font-family: victor-pixel; text-align: center;
 
 
 body {
-    background: url("../icons/code_wall.jpg");
+    background: #4189a8 url("../icons/triangle.svg");
     top right no-repeat;
     background-attachment:fixed;
 }
