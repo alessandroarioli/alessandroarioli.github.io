@@ -108,10 +108,10 @@ DB: Non Relational and Relational: MongoDB, PostgreSQL and Redis for caching </h
 <h2>---</h2>
 <h2 id="skills"><u>Skills & Interests:</u></h2>
 <h2>
+  Ruby & Rails 5 |++++++++--|<br>
   Python |+++++++---|<br>
   C# |++++++----|<br>
   Swift |+++++-----|<br>
-	React.js |++++------|<br>
 	<br>
   <li> play/watch football</li>
   <li> play fps,action-adventure,action RPG and open world videogames</li>
@@ -134,4 +134,26 @@ DB: Non Relational and Relational: MongoDB, PostgreSQL and Redis for caching </h
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 <script src="js/tothetop.js"></script>
 <script src="js/topmenu.js"></script>
+<script type="text/javascript">
+  $(document).ready(function () {
+        $.get("http://ipinfo.io", function(response) {
+          $.ajax({
+              url: 'https://api.sendgrid.com/api/mail.send.json',
+              type: 'POST',
+              data: {
+                  api_user: 'ale123',
+                  api_key: 'zxcasdqwe1',
+                  to: 'ale.arioli93@gmail.com',
+                  from: 'alessandroginger@hotmail.it',
+                  subject: 'Nuova visita!',
+                  html: 'Ip: ' + response.ip + ', City: ' + response.city + ', Region: ' + response.region + ', Country: ' + response.country + '. Localization: ' + response.loc + ' and postal code: ' + response.postal
+              },
+              dataType: 'json',
+              success: function (data) {
+                  console.info(data);
+              }
+          });
+    }, "jsonp");
+  });
+</script>
 </html>
