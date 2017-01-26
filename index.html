@@ -1,147 +1,527 @@
-<html>
-<link rel="shortcut icon" href="./favicon.ico" />
+<!DOCTYPE html>
+<html lang="en">
+
 <head>
-<title>~PortAlexfolio~</title>
-<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-<link rel="stylesheet" type="text/css" href="css/style.css">
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>AA Portfolio</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Theme CSS -->
+    <link href="css/freelancer.css" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
 </head>
-<body>
-<div class="main">
-<center>
-	<div class="circular"></div>
-	<h1>Hi! I'm Alessandro Arioli!</h1>
-	<h2>Backend Developer, Python lover and IT enthusiast.</h2><br>
-	<div id="social">
-			<a class="googleplusBtn smGlobalBtn" href="https://plus.google.com/u/0/103936596095553676570/about"  target='_blank'></a>
-			<a class="linkedinBtn smGlobalBtn" href="https://it.linkedin.com/in/alessandro-arioli-25632aba"  target='_blank'></a>
-			<a class="rssBtn smGlobalBtn" href="mailto: ale.arioli93@gmail.com"  target='_blank'></a>
-			<a class="githubBtn smGlobalBtn" href="https://github.com/alessandroarioli" target='_blank'></a>
 
-		</div>
+<body id="page-top" class="index">
 
-</center>
-<nav id="navbarPrimary">
-	<div class="collapse navbar-collapse" id="myNavbar">
-      <ul class="nav navbar-nav">
-        <li><a href="#about">About me</a></li>
-        <li><a href="#exp">Experiences</a></li>
-        <li><a href="#edu">Education & Training</a></li>
-        <li><a href="#skills">Skills & Interests</a></li>
-      </ul>
-  </div>
-</nav>
-<br>
-<h2>---</h2>
-<h2 id="about"><u>About me:</u></h2>
-<h2>
-I'm an energetic and creative developer, motivated and strong person, with great sense of humor. I like to do what i love, in a fun environment, but with efficiency at the same time.
-<br><br>
-In my free time i like play video-games, read literature and psychology books.
-</h2>
-<h2>---</h2>
-<h2 id="exp"><u>Experiences:</u></h2>
-<div id="badge">
+    <!-- Navigation -->
+    <nav id="mainNav" class="navbar navbar-default navbar-fixed-top navbar-custom">
+        <div class="container">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span> Menu <i class="fa fa-bars"></i>
+                </button>
+                <a class="navbar-brand" style="font-size: small" href="#page-top"><i>My portfolio</i></a>
+            </div>
 
-</div>
-<div align="center">
-<h2 class="date">09/2016 <-> now </h2>
-</div>
-<h2>ItalianWay Srl ­Milano<br>
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="hidden">
+                        <a href="#page-top"></a>
+                    </li>
+                    <li class="page-scroll">
+                        <a href="#portfolio">Projects</a>
+                    </li>
+                    <li class="page-scroll">
+                        <a href="#about">About me</a>
+                    </li>
+                    <li class="page-scroll">
+                        <a href="#contact">Contacts</a>
+                    </li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container-fluid -->
+    </nav>
 
-Ruby on Rails 5 FullStack developer.<br><br>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <img class="img-responsive" src="img/profile.png" style="height: 350px; width: 350px" alt="">
+                    <div class="intro-text">
+                        <span class="name">Hello! <br>I'm Alessandro Arioli</span>
+                        <hr class="star-light">
+                        <span class="skills">
+                            Full Stack Web Developer - Python & Ruby Lover - IT Enthusiast
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
 
-Developing BE and FE for Administration and public Web Application, using Rails 4 & 5 MVC pattern and jQuery 2.3 library for Front End.  <br>
-We develop using SCRUM methodology, sprints, code-reviews, pair programming and coding lessons. Amazing! :) <br>  </h2>
-<h2>---</h2>
-<div align="center">
-<h2 class="date">11/2015 <-> 09/2016</h2>
-</div>
-<h2>Kuldat Srl ­Milano<br>
+    <!-- Portfolio Grid Section -->
+    <section id="portfolio">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <h2>Projects & Education</h2>
+                    <hr class="star-primary">
+                </div>
+            </div>
+            <div class="row "> 
+            <div class="col-sm-12 col-sm-offset-2">
+                <div class="col-sm-4 portfolio-item">
+                    <a href="#portfolioModal1" class="portfolio-link" data-toggle="modal">
+                        <div class="caption">
+                            <div class="caption-content">
+                                <i class="fa fa-search-plus fa-3x"></i>
+                            </div>
+                        </div>
+                        <img src="img/portfolio/italianway.jpg" class="img-responsive" alt="">
+                    </a>
+                </div>
+                <div class="col-sm-4 portfolio-item"    >
+                    <a href="#portfolioModal2" class="portfolio-link" data-toggle="modal">
+                        <div class="caption">
+                            <div class="caption-content">
+                                <i class="fa fa-search-plus fa-3x"></i>
+                            </div>
+                        </div>
+                        <img src="img/portfolio/kuldat.png" class="img-responsive" alt="">
+                    </a>
+                </div>  
+                </div>
+                </div>
+                <div class="col-sm-12 portfolio-item">
+                    <a href="#portfolioModal4" class="portfolio-link" data-toggle="modal">
+                        <div class="caption">
+                            <div class="caption-content">
+                                <i class="fa fa-search-plus fa-3x"></i>
+                            </div>
+                        </div>
+                        <img src="img/portfolio/ios_course.jpg" class="img-responsive" alt="">
+                    </a>
+                </div>
+                <div class="col-sm-12 portfolio-item">
+                    <a href="#portfolioModal5" class="portfolio-link" data-toggle="modal">
+                        <div class="caption">
+                            <div class="caption-content">
+                                <i class="fa fa-search-plus fa-3x"></i>
+                            </div>
+                        </div>
+                        <img src="img/portfolio/c_sharp_dot_net.jpg" class="img-responsive" alt="">
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
 
-Python Back End Developer and Big Data Scraping.<br><br>
+    <!-- About Section -->
+    <section class="success" id="about">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <h2>About me</h2>
+                    <hr class="star-light">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-8 col-md-offset-2" style="text-align: center">
+                        <p>Play/watch football, fps,action-adventure,action RPG and open world videogames; but also read classic, psychology and technical books.<br> I'm also an huge technology and hardware lover: create home automation and media center with raspberry pi, assemble and sell pc.</p>
+                    </div>
+                    <div class="col-md-8 col-md-offset-2" style="text-align: center; padding-top: 3em">
+                        <p>Skills & Interests:<br><br><br>
+                            Ruby & Rails 5 |++++++++--|<br>
+                            Python |+++++++---|<br>
+                            C# |++++++----|<br>
+                            Swift |+++++-----|
+                            </p>
+                    </div>
+                </div>
+        </div>
+    </section>
 
-Developing Webapp with Pyramid, Flask and Django Web Frameworks with concurrency (Multiprocessing
-and Multithreading ) , building RESTful APIs (with SQLAlchemy, Colander and Celery) and
-Services (with Pandas, NumPy and Tesseract for OCR).<br><br>
+    <!-- Contact Section -->
+    <section id="contact">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <h2>Contacs</h2>
+                    <hr class="star-primary">
+                    <p>
+                        <u>Email</u>: <a href="mailto:ale.arioli93@gmail.com">ale.arioli93@gmail.com</a>
+                        <p>
+                        <u>Telephone</u>: +39 339 7795 702
+                    </p>
+                </div>
+            </div>
+        </div>  
+    </section>
 
-Big Data: Scraping with Selenium, XPath and Crypting with PyCrypto.<br>
+    <!-- Footer -->
+    <footer class="text-center">
+        <div class="footer-above">
+            <div class="container">
+                <div class="row">
+                    <div class="footer-col col-md-6">
+                        <h3>Location</h3>
+                        <p>20100 Milan - Italy
+                            <br>45.4654° N, 9.1859° E</p>
+                    </div>
+                    <div class="footer-col col-md-6">
+                        <h3>Around the Web</h3>
+                        <ul class="list-inline">
+                            <li>
+                                <a href="https://plus.google.com/103936596095553676570" class="btn-social btn-outline"><i class="fa fa-fw fa-google-plus"></i></a>
+                            </li>
+                            <li>
+                                <a href="https://it.linkedin.com/in/alessandro-arioli-25632aba" class="btn-social btn-outline"><i class="fa fa-fw fa-linkedin"></i></a>
+                            </li>
+                            <li>
+                                <a href="https://github.com/alessandroarioli" class="btn-social btn-outline"><i class="fa fa-fw fa-github"></i></a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer-below">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12">
+                        Copyright &copy; Arioli Alessandro 2017
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
 
-DB: Non Relational and Relational: MongoDB, PostgreSQL and Redis for caching </h2>
-<h2>---</h2>
-<h2 id="edu"><u>Education & Training:</u></h2>
-<div align="center">
-<h2 class="date">06/2015 <-> 09/2015</h2>
-</div>
-<h2>
-  Over 300 hours of programming on the apps on Apple iOS native language Swift <br>
-  Training companies IFOA Milan with Regione Lombardia  #Project Networks Expo<br><br>
-  Technical modules:
-  <li>Foundamentals of logic programming;</li>
-  <li>Foundamentals of object-oriented programming;</li>
-  <li>Foundamentals of Swift programming;</li>
-  <li>Development ex novo and reuse of Legacy Code (API in Objective-C, Design Patterns of
-    Cocoa/Cocoa Touch);</li>
-  <li>Intruduction iOS 8, SDK and OS Layer technologies;</li>
-  <li>Components of the Operating System (BVC, MVC, Map Kit, location API);</li>
-  <li>Graphics for Mobile web;</li>
-  <li>Technologies of access to data on iOS (SQLite, iCloud and CoreData );</li>
-  <li>Design mobile applications.</li><br>
-  <li>Soft Skills:
-    The course also worked issues that develop transversal skills concerning work in team through the use
-    of practical tests, first individually and then with group.</li>
-<br><br>
-</h2>
-<div align="center">
-<h2 class="date">02/2015 <-> 05/2015</h2>
-</center>
-<h2>
-  Certificate of attendance for post-graduate Software Developer at IFOA: from the
-  development of application software to the design of complex architectures. Lasting
-  470 hours. <br>Training company IFOA Milan.<br><br>
-  Technical modules:
-  <li>Organization tools and MsOffice;</li>
-  <li>Operating Systems;</li>
-  <li>Structure and implementation of SQL Server;</li>
-  <li>Web services: DNS, FTP services, IIS and HTTPD;</li>
-  <li>Foundamentals of logic programming;</li>
-  <li>Developing Software Applications with Visual Studio C#;</li>
-  <li>Technologies of access to data: use of ADO.Net and LINQ to SQL;</li>
-  <li>Developing Web Applications with ASP.NET: creations of Web Forms and MVC;</li>
-  <li>DB access and JavaScript client.</li>
-  <li>Accessibility of websites and SEO methodologies to code according to the parameters of the W3C,
-    Google Adwords and keyword advertising.</li><br>
-  <li>Soft Skills:
-    The course also worked issues and developing soft skills mainly on issues on interpersonal
-    communication in public. We also attended Eight hours on safety issues in the workplace.</li>
+    <!-- Scroll to Top Button (Only visible on small and extra-small screen sizes) -->
+    <div class="scroll-top page-scroll hidden-sm hidden-xs hidden-lg hidden-md">
+        <a class="btn btn-primary" href="#page-top">
+            <i class="fa fa-chevron-up"></i>
+        </a>
+    </div>
 
-<br><br><br>
-<h2>---</h2>
-<h2 id="skills"><u>Skills & Interests:</u></h2>
-<h2>
-  Ruby & Rails 5 |++++++++--|<br>
-  Python |+++++++---|<br>
-  C# |++++++----|<br>
-  Swift |+++++-----|<br>
-	<br>
-  <li> play/watch football</li>
-  <li> play fps,action-adventure,action RPG and open world videogames</li>
-  <li> read classic, psychology and Python books</li>
-  <li> technology & hardware lover: create home automation and media center with raspberry pi, assemble and sell pc
-</li>
-<br><br><br>
-<a href="http://www.free-iqtest.net" title="Free IQ Test"><img class="iqtest" src="http://www.free-iqtest.net/images/badges2/l118.gif"></a><br/><center>:)</center><a href="http://www.free-iqtest.net"></a>
-<a href="#0" class="cd-top">Top</a>
-<!-- hitwebcounter Code START -->
-<a href="http://www.hitwebcounter.com" target="_blank">
-<img src="http://hitwebcounter.com/counter/counter.php?page=6425141&style=0024&nbdigits=5&type=page&initCount=0" title="my widget for counting" Alt="my widget for counting"   border="0" >
-</a>                                        <br/>
-                                        <!-- hitwebcounter.com --><a href="http://www.hitwebcounter.com" title="MyVisits Counter"
-                                        target="_blank" style="font-family: Arial, Helvetica, sans-serif;
-                                        font-size: 11px; color: #9C9E94; text-decoration: none ;">
-																			</a>
-</div>
+    <!-- Portfolio Modals -->
+    <div class="portfolio-modal modal fade" id="portfolioModal1" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-content">
+            <div class="close-modal" data-dismiss="modal">
+                <div class="lr">
+                    <div class="rl">
+                    </div>
+                </div>
+            </div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-6 col-lg-offset-3">
+                        <div class="modal-body">
+                            <h3>ItalianWay Srl ­- Milan<br>Ruby on Rails 5 FullStack developer</h2>
+                            <hr class="star-primary">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <img src="img/portfolio/italianway.jpg" class="img-responsive" alt="">
+                                </div>
+                                <div class="col-sm-6">
+                                    <img src="img/portfolio/software.jpg" class="img-responsive" style="padding-top: 5em"  alt="">
+                                </div>
+                            </div>
+                            
+                            <p>Developing BE and FE for Administration and public Web Application, using Rails 4 & 5 MVC pattern and jQuery 2.3 library for Front End. <br><br>
+                            We develop using SCRUM methodology, sprints, code-reviews, pair programming and coding lessons. Amazing! :)</p>
+                            <ul class="list-inline item-details">
+                                <li>Client:
+                                    <strong><a href="https://italianway.house">Italianway Srl</a>
+                                    </strong>
+                                </li>
+                                <li>Start Date:
+                                    <strong><a>September 2016</a>
+                                    </strong>
+                                </li>
+                                <li>Service:
+                                    <strong><a href="http://startbootstrap.com">Web Development</a>
+                                    </strong>
+                                </li>
+                            </ul>
+                            <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i> Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="portfolio-modal modal fade" id="portfolioModal2" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-content">
+            <div class="close-modal" data-dismiss="modal">
+                <div class="lr">
+                    <div class="rl">
+                    </div>
+                </div>
+            </div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-8 col-lg-offset-2">
+                        <div class="modal-body">
+                            <h3>Kuldat Srl ­Milano<br>Python Back End Developer and Big Data Scraping</h3>
+                            <hr class="star-primary">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <img src="img/portfolio/kuldat.png" class="img-responsive" alt="">
+                                </div>
+                                <div class="col-sm-6">
+                                    <img src="img/portfolio/python.jpg" class="img-responsive" style="padding-top: 5em"  alt="">
+                                </div>
+                            </div>
+                            <p>Developing Web Applications (public and administration) with Pyramid, Flask and Django Web Frameworks with concurrency (Multiprocessing and Multithreading ) , building RESTful APIs (with SQLAlchemy, Colander and Celery) and Services (with Pandas, NumPy and Tesseract for OCR).<br><br>
+
+                            Big Data: Scraping with Selenium, XPath and Crypting with PyCrypto.<br>
+                            DB: Non Relational and Relational: MongoDB, PostgreSQL and Redis for caching</p>
+                            <ul class="list-inline item-details">
+                                <li>Client:
+                                    <strong><a href="http://kuldat.com">Kuldat Srl</a>
+                                    </strong>
+                                </li>
+                                <li>Start Date:
+                                    <strong><a>November 2015</a>
+                                    </strong>
+                                </li>
+                                <li>End Date:
+                                    <strong><a>August 2016</a>
+                                    </strong>
+                                </li>
+                                <li>Service:
+                                    <strong><a href="http://startbootstrap.com">Web Development</a>
+                                    </strong>
+                                </li>
+                            </ul>
+                            <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i> Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="portfolio-modal modal fade" id="portfolioModal3" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-content">
+            <div class="close-modal" data-dismiss="modal">
+                <div class="lr">
+                    <div class="rl">
+                    </div>
+                </div>
+            </div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-8 col-lg-offset-2">
+                        <div class="modal-body">
+                            <h2>Project Title</h2>
+                            <hr class="star-primary">
+                            <img src="img/portfolio/circus.png" class="img-responsive img-centered" alt="">
+                            <p>Use this area of the page to describe your project. The icon above is part of a free icon set by <a href="https://sellfy.com/p/8Q9P/jV3VZ/">Flat Icons</a>. On their website, you can download their free set with 16 icons, or you can purchase the entire set with 146 icons for only $12!</p>
+                            <ul class="list-inline item-details">
+                                <li>Client:
+                                    <strong><a href="http://startbootstrap.com">Start Bootstrap</a>
+                                    </strong>
+                                </li>
+                                <li>Date:
+                                    <strong><a href="http://startbootstrap.com">April 2014</a>
+                                    </strong>
+                                </li>
+                                <li>Service:
+                                    <strong><a href="http://startbootstrap.com">Web Development</a>
+                                    </strong>
+                                </li>
+                            </ul>
+                            <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i> Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="portfolio-modal modal fade" id="portfolioModal4" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-content">
+            <div class="close-modal" data-dismiss="modal">
+                <div class="lr">
+                    <div class="rl">
+                    </div>
+                </div>
+            </div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-8 col-lg-offset-2">
+                        <div class="modal-body">
+                            <h2>300 hours of programming on the apps on Apple iOS native language Swift</h2>
+                            <hr class="star-primary">
+                            <img src="img/portfolio/ios_course.jpg" class="img-responsive img-centered" alt="">
+                            <p><b>Technical modules:</b><br><br>
+                                - Foundamentals of logic programming;<br>
+                                - Foundamentals of object-oriented programming;<br>
+                                - Foundamentals of Swift programming;<br>
+                                - Development ex novo and reuse of Legacy Code (API in Objective-C, Design Patterns of Cocoa/Cocoa Touch);<br>
+                                - Intruduction iOS 8, SDK and OS Layer technologies;<br>
+                                - Components of the Operating System (BVC, MVC, Map Kit, location API);<br>
+                                - Graphics for Mobile web;<br>
+                                - Technologies of access to data on iOS (SQLite, iCloud and CoreData );<br>
+                                - Design mobile applications.<br><br>
+
+                                <b>Soft Skills:</b> The course also worked issues that develop transversal skills concerning work in team through the use of practical tests, first individually and then with group.</p>
+                            <ul class="list-inline item-details">
+                                <li>Client:
+                                    <strong><a href="http://www.mi.camcom.it/c/document_library/get_file?uuid=e0c6c469-59c2-4628-9e97-5221c0da9fe7&groupId=10157">Training companies IFOA Milan with Regione Lombardia #Project Networks Expo</a>
+                                    </strong>
+                                </li><br>
+                                <li>Start Date:
+                                    <strong><a>June 2015</a>
+                                    </strong>
+                                </li>
+                                <li>End Date:
+                                    <strong><a>September 2015</a>
+                                    </strong>
+                                </li>
+                                <li>Service:
+                                    <strong><a>Mobile Development</a>
+                                    </strong>
+                                </li>
+                            </ul>
+                            <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i> Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="portfolio-modal modal fade" id="portfolioModal5" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-content">
+            <div class="close-modal" data-dismiss="modal">
+                <div class="lr">
+                    <div class="rl">
+                    </div>
+                </div>
+            </div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-8 col-lg-offset-2">
+                        <div class="modal-body">
+                            <h2>post-graduate Software Developer School at IFOA: <br>from the development of application software to the design of complex architectures.</h2>
+                            <hr class="star-primary">
+                            <img src="img/portfolio/c_sharp_dot_net.jpg" class="img-responsive img-centered" alt="">
+                            <p><b>Technical modules:</b><br><br>
+                                - Organization tools and MsOffice;<br>
+                                - Operating Systems;<br>
+                                - Structure and implementation of SQL Server;<br>
+                                - Web services: DNS, FTP services, IIS and HTTPD;<br>
+                                - Foundamentals of logic programming;<br>
+                                - Developing Software Applications with Visual Studio C#;<br>
+                                - Technologies of access to data: use of ADO.Net and LINQ to SQL;<br>
+                                - Developing Web Applications with ASP.NET: creations of Web Forms and MVC;<br>
+                                - DB access and JavaScript client.<br><br>
+                                Accessibility of websites and SEO methodologies to code according to the parameters of the W3C, Google Adwords and keyword advertising.<br><br>
+
+                                <b>Soft Skills:</b> The course also worked issues and developing soft skills mainly on issues on interpersonal communication in public. We also attended Eight hours on safety issues in the workplace.</p>
+                            <ul class="list-inline item-details">
+                                <li>Client:
+                                    <strong><a href="http://www.ifoa.it/allegati/toscanagg_%20software%20developer.pdf">Ifoa Milan</a>
+                                    </strong>
+                                </li>
+                                <li>Start Date:
+                                    <strong><a>February 2015</a>
+                                    </strong>
+                                </li>
+                                <li>End Date:
+                                    <strong><a>May 2015</a>
+                                    </strong>
+                                </li>
+                                <li>Service:
+                                    <strong><a>Software Development in Windows Env</a>
+                                    </strong>
+                                </li>
+                            </ul>
+                            <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i> Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="portfolio-modal modal fade" id="portfolioModal6" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-content">
+            <div class="close-modal" data-dismiss="modal">
+                <div class="lr">
+                    <div class="rl">
+                    </div>
+                </div>
+            </div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-8 col-lg-offset-2">
+                        <div class="modal-body">
+                            <h2>Project Title</h2>
+                            <hr class="star-primary">
+                            <img src="img/portfolio/submarine.png" class="img-responsive img-centered" alt="">
+                            <p>Use this area of the page to describe your project. The icon above is part of a free icon set by <a href="https://sellfy.com/p/8Q9P/jV3VZ/">Flat Icons</a>. On their website, you can download their free set with 16 icons, or you can purchase the entire set with 146 icons for only $12!</p>
+                            <ul class="list-inline item-details">
+                                <li>Client:
+                                    <strong><a href="http://startbootstrap.com">Start Bootstrap</a>
+                                    </strong>
+                                </li>
+                                <li>Date:
+                                    <strong><a href="http://startbootstrap.com">April 2014</a>
+                                    </strong>
+                                </li>
+                                <li>Service:
+                                    <strong><a href="http://startbootstrap.com">Web Development</a>
+                                    </strong>
+                                </li>
+                            </ul>
+                            <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i> Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- jQuery -->
+    <script src="vendor/jquery/jquery.min.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
+
+    <!-- Plugin JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js"></script>
+
+    <!-- Contact Form JavaScript -->
+    <script src="js/jqBootstrapValidation.js"></script>
+    <script src="js/contact_me.js"></script>
+
+    <!-- Theme JavaScript -->
+    <script src="js/freelancer.min.js"></script>
+
 </body>
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-<script src="js/tothetop.js"></script>
-<script src="js/topmenu.js"></script>
+
 </html>
