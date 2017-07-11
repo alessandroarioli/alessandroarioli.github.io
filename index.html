@@ -14,6 +14,9 @@
     <!-- Bootstrap Core CSS -->
     <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
+    <!-- Chart.js -->
+    <script src="vendor/chart_js/Chart.min.js"></script>
+
     <!-- Theme CSS -->
     <link href="css/freelancer.css" rel="stylesheet">
 
@@ -141,6 +144,23 @@
         </div>
     </section>
 
+    <section>
+        <div class="row">
+            <div class="col-lg-12 text-center">
+                <h2>Programming Languages Skills</h2>
+                <hr class="star-primary">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 col-md-offset-3">
+                <canvas id="skillsChart"></canvas>
+            </div>
+            <div class="col-lg-8 col-lg-offset-2" style="text-align: center; padding-top: 3em">
+                <b>JavaScript: Vanilla, jQuery, Vue.js, ReactJS</b>
+            </div>
+        </div>
+    </section>
+
     <!-- About Section -->
     <section class="success" id="about">
         <div class="container">
@@ -153,14 +173,6 @@
             <div class="row">
                 <div class="col-md-8 col-md-offset-2" style="text-align: center">
                         <p>Play/watch football, fps,action-adventure,action RPG and open world videogames; but also read classic, psychology and technical books.<br> I'm also an huge technology and hardware lover: create home automation and media center with raspberry pi, assemble and sell pc.</p>
-                    </div>
-                    <div class="col-md-8 col-md-offset-2" style="text-align: center; padding-top: 3em">
-                        <p>Skills & Interests:<br><br><br>
-                            Ruby & Rails 5 |++++++++--|<br>
-                            Python |+++++++---|<br>
-                            C# |++++++----|<br>
-                            Swift |+++++-----|
-                            </p>
                     </div>
                 </div>
         </div>
@@ -519,9 +531,37 @@
     <script src="js/jqBootstrapValidation.js"></script>
     <script src="js/contact_me.js"></script>
 
+
     <!-- Theme JavaScript -->
     <script src="js/freelancer.min.js"></script>
 
-</body>
+    <script type="text/javascript">
+        // Bar chart
+        new Chart(document.getElementById("skillsChart"), {
+            type: 'bar',
+            data: {
+              labels: ["JavaScript", "Ruby on Rails", "Python", "Swift", "GoLang", "C#"],
+              datasets: [
+                {
+                  label: "Power: ",
+                  backgroundColor: ["#3e95cd", "#c45850","#FFFF00","#e8c3b9","#FFFF99"],
+                  data: [75, 70, 65, 45, 40, 35]
+                }
+              ]
+            },
+            options: {
+              legend: { display: false },
+              scales: {
+                yAxes: [{
+                    display: true,
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            }
+            }
+        });
+    </script>
 
+</body>
 </html>
