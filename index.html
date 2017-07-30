@@ -79,7 +79,7 @@
                         <span class="name">Hello! <br>I'm Alessandro Arioli</span>
                         <hr class="star-light">
                         <span class="skills">
-                            Full Stack Web Developer - Python & Ruby Lover - IT Enthusiast
+                            Full Stack Web Developer - Python, Ruby & Javascript Lover - IT Enthusiast
                         </span>
                     </div>
                 </div>
@@ -156,7 +156,7 @@
                 <canvas id="skillsChart"></canvas>
             </div>
             <div class="col-lg-8 col-lg-offset-2" style="text-align: center; padding-top: 3em">
-                <b>JavaScript: Vanilla, jQuery, Vue.js, ReactJS</b>
+                <b>JavaScript: Vanilla, Ecmascript [5.0 ... 6], jQuery [2.2.x ... 3.2.1], Vue.js, ReactJS</b>
             </div>
         </div>
     </section>
@@ -202,8 +202,8 @@
                 <div class="row">
                     <div class="footer-col col-md-6">
                         <h3>Location</h3>
-                        <p>20100 Milan - Italy
-                            <br>45.4654° N, 9.1859° E</p>
+                        <a href="https://www.google.com/maps/preview/@45.4654,9.1859,14z" target="_blank">
+                        <p>20100 Milan - Italy <br> 45.4654° N, 9.1859° E</p></a>
                     </div>
                     <div class="footer-col col-md-6">
                         <h3>Around the Web</h3>
@@ -535,33 +535,8 @@
     <!-- Theme JavaScript -->
     <script src="js/freelancer.min.js"></script>
 
-    <script type="text/javascript">
-        // Bar chart
-        new Chart(document.getElementById("skillsChart"), {
-            type: 'bar',
-            data: {
-              labels: ["JavaScript", "Ruby on Rails", "Python", "Swift", "GoLang", "C#"],
-              datasets: [
-                {
-                  label: "Power: ",
-                  backgroundColor: ["#3e95cd", "#c45850","#FFFF00","#e8c3b9","#FFFF99"],
-                  data: [75, 70, 65, 45, 40, 35]
-                }
-              ]
-            },
-            options: {
-              legend: { display: false },
-              scales: {
-                yAxes: [{
-                    display: true,
-                    ticks: {
-                        beginAtZero: true
-                    }
-                }]
-            }
-            }
-        });
-    </script>
+    <!-- The chart of skills -->
+    <script src="js/chart_skills.js"></script>
 
 </body>
 </html>
