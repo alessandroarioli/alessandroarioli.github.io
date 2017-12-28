@@ -28,9 +28,6 @@
     "url": "https://github.com/BlackrockDigital/startbootstrap-freelancer.git"
   },
   "dependencies": {
-    "extract-text-webpack-plugin": "3.0.2",
-    "webpack": "3.10.0",
-    "webpack-dev-server": "2.9.7",
-    "webpack-merge": "4.1.1"
+    "webpack-dev-server": "2.9.7"
   }
 }
