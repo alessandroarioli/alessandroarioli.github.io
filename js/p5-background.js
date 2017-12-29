@@ -8,7 +8,7 @@ var maxFlakeSize = 5;
 var snowColor = 255;
 
 function setup() {
-  let height = (width < 425) ? windowHeight + 200 : windowHeight;
+  let height = (windowWidth > 425) ? windowHeight + 300 : windowHeight;
   let canvas = createCanvas(window.innerWidth, height);
   canvas.parent('background');
   background(0);
