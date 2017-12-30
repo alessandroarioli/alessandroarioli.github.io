@@ -68,6 +68,25 @@ hr.star-primary:after {
   margin: 0 auto;
 }
 
+div.photo-profile {
+  filter: blur(15px);
+  background-size: cover;
+  animation: hd-quality 0.5s;
+  animation-delay: 0.9s;
+  animation-fill-mode: forwards;
+}
+
+div.photo-profile::after {
+  animation: low-quality 1s;
+  animation-delay: 1s;
+}
+
+@keyframes
+  hd-quality {
+    0%  { filter: blur(20px); }
+   100% { filter: blur(0px); }
+}
+
 #background {
    position: absolute;
    top:0;
