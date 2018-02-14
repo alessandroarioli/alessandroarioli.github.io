@@ -227,7 +227,7 @@
             <div class="container">
                 <div class="row">
                     <div class="col-lg-12">
-                        Copyright &copy; Arioli Alessandro 2017
+                        Copyright &copy; Arioli Alessandro &nbsp;<span id="current-year"></span>
                     </div>
                 </div>
             </div>
@@ -518,6 +518,10 @@
             </div>
         </div>
     </div>
+
+    <script>
+        document.getElementById('current-year').innerHTML = new Date().getFullYear();
+    </script>
 
     <!-- jQuery -->
     <script src="vendor/jquery/jquery.min.js"></script>
