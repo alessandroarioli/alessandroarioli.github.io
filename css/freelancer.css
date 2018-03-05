@@ -7,6 +7,16 @@ body {
   font-family: 'Lato', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   overflow-x: hidden;
 }
+
+.display-flex {
+  display: flex;
+}
+
+.flex-one {
+  flex: 1;
+}
+
+
 p {
   font-size: 20px;
 }
