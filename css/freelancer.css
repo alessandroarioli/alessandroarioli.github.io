@@ -9,6 +9,10 @@ body {
   background-color: #f4f4f4;
 }
 
+.job-details{
+  text-align: left;
+}
+
 .display-flex {
   display: flex;
 }
