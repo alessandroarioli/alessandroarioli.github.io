@@ -1,515 +1,161 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="">
-
-    <title>AA Portfolio</title>
-
-    <!-- Bootstrap Core CSS -->
-    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Chart.js -->
-    <script src="vendor/chart_js/Chart.min.js"></script>
-
-    <!-- Theme CSS -->
-    <link href="css/freelancer.css" rel="stylesheet">
-
-    <!-- Custom Fonts -->
-    <link href="vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
-    <link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css">
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f4f4f9;
+            color: #333;
+            line-height: 1.6;
+        }
+        header {
+            background: #282c34;
+            color: #fff;
+            padding: 40px 20px;
+            text-align: center;
+        }
+        header img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            margin-bottom: 20px;
+            border: 3px solid #fff;
+        }
+        section {
+            padding: 40px 20px;
+            margin: 20px auto;
+            max-width: 900px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            color: #282c34;
+            font-size: 1.8rem;
+            border-bottom: 2px solid #3498db;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        ul li {
+            margin-bottom: 15px;
+        }
+        .work-item h3, .edu-item h3 {
+            color: #3498db;
+            margin: 0;
+        }
+        .highlight {
+            background: #e3f2fd;
+            color: #1976d2;
+            padding: 5px 10px;
+            border-radius: 4px;
+        }
+        .company-logo {
+            width: 100px;
+            height: auto;
+            margin-bottom: 10px;
+            display: block;
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            background: #282c34;
+            color: #fff;
+        }
+    </style>
 </head>
+<body>
+<header>
+    <!-- Profile Picture Placeholder -->
+    <img src="https://media.licdn.com/dms/image/v2/D4D03AQGXrVwQ51MivQ/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1669502234700?e=1747267200&v=beta&t=wpOInIMA5A2etAedLRpxgh_zQp7C9242qwni8CPDDwU" alt="Profile Picture">
+    <h1>My Portfolio</h1>
+    <p class="highlight">Web Developer | Problem Solver | Espresso Enthusiast</p>
+</header>
 
-<body id="page-top" class="index">
+<section id="summary">
+    <h2>Summary</h2>
+    <p>
+        Programming is the art of creating, and I love creating new things, from 0 to 1!
+        Hi everyone! I'm a 30 years old nerd boy that knows how to co-work with others,
+        creating software architectures while enjoying a nice Italian espresso. I'm interested in
+        Frontend development / research as well as Backend development. My most valuable skill is adaptability
+        and my ability to work as a team to build something great!
+    </p>
+</section>
 
-    <!-- Navigation -->
-    <nav id="mainNav" class="navbar navbar-default navbar-fixed-top navbar-custom">
-        <div class="container">
-            <!-- Brand and toggle get grouped for better mobile display -->
-            <div class="navbar-header page-scroll">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-                    <span class="sr-only">Toggle navigation</span> Menu <i class="fa fa-bars"></i>
-                </button>
-                <a class="navbar-brand" style="font-size: small" href="#page-top"><i>My portfolio</i></a>
-            </div>
+<section id="work-experience">
+    <h2>Work Experience</h2>
+    <ul>
+        <li class="work-item">
+            <img src="https://res.cloudinary.com/lastminute-contenthub/v1/DAM/Logos%20%2B%20fonts/SVG/corporate%20website/lastminute" alt="Lastminute.com Logo" class="company-logo">
+            <h3>Software Engineer</h3>
+            <p>Lastminute.com | Chiasso, Ticino, Switzerland | <span class="highlight">Sep 2019 - Present</span></p>
+            <!-- Company Logo Placeholder -->
+            <ul>
+                <li>Frontend: React + TypeScript, styled-components, Node.js</li>
+                <li>Strict TDD methodology, SOLID & DRY principles, Hexagonal architecture</li>
+                <li>Webpack 5 with Module Federation and micro frontends</li>
+                <li>Backend: Kotlin with functional programming, legacy module refactoring</li>
+                <li>Agile collaboration, pair programming with multi-team collaboration</li>
+            </ul>
+        </li>
+        <li class="work-item">
+            <img src="https://it.italianway.house/assets/img-logo-1acef0e1fc7bb9973946cb61f21651bc822918c96787fc028963c7cf981aabbc.svg" alt="Italianway SRL Logo" class="company-logo">
+            <h3>Ruby on Rails Developer</h3>
+            <p>Italianway SRL | Milano, Lombardy, Italy | <span class="highlight">Oct 2016 - Aug 2019</span></p>
+            <!-- Company Logo Placeholder -->
+            <ul>
+                <li>Backend: Ruby, Rails 5</li>
+                <li>Frontend: jQuery, Webpack (ES6), Vue.js 2</li>
+                <li>DevOps: AWS S3, Lambda, EC2, Postgres, Redis</li>
+                <li>SCRUM, standups, code reviews, and sprints</li>
+            </ul>
+        </li>
+        <li class="work-item">
+            <img src="https://www.smau.it/Imported/PartnerProfile/image-thumb__11690__partner-show-image/kuldat_blue_transparent_38662.jpeg" alt="Kuldat Logo" class="company-logo">
+            <h3>Python Developer</h3>
+            <p>Kuldat | Milano, Italy | <span class="highlight">Nov 2015 - Sep 2016</span></p>
+            <!-- Company Logo Placeholder -->
+            <ul>
+                <li>Backend: Pyramid, Flask, SQLAlchemy, Celery</li>
+                <li>Big Data: Scraping with Selenium, XPath</li>
+                <li>Databases: MongoDB, PostgreSQL, Redis</li>
+            </ul>
+        </li>
+    </ul>
+</section>
 
-            <!-- Collect the nav links, forms, and other content for toggling -->
-            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                <ul class="nav navbar-nav navbar-right">
-                    <li class="hidden">
-                        <a href="#page-top"></a>
-                    </li>
-                    <li class="page-scroll">
-                        <a href="#portfolio">Projects</a>
-                    </li>
-                    <li class="page-scroll">
-                        <a href="#about">About me</a>
-                    </li>
-                    <li class="page-scroll">
-                        <a href="#contact">Contacts</a>
-                    </li>
-                </ul>
-            </div>
-            <!-- /.navbar-collapse -->
-        </div>
-        <!-- /.container-fluid -->
-    </nav>
-    <!-- Header -->
+<section id="education">
+    <h2>Education</h2>
+    <ul>
+        <li class="edu-item">
+            <img src="https://www.unimib.it/sites/default/files/logo.png" class="company-logo">
+            <h3>Economic, Business/Commerce, General</h3>
+            <p>Università degli Studi di Milano-Bicocca | <span class="highlight">2014</span></p>
+        </li>
+        <li class="edu-item">
+            <h3>High School Diploma</h3>
+            <p>Scientific Institute I.I.S. Alessandrini di Abbiategrasso | <span class="highlight">2012</span></p>
+        </li>
+    </ul>
+</section>
 
-    <!-- particles.js container -->
-    <div id="particles-js"></div>
+<section id="hobbies">
+    <h2>Hobbies</h2>
+    <p>Travelling, biking, photography, and eating sushi.</p>
+</section>
 
-    <header>
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="photo-profile">
-                      <img class="img-responsive" src="img/portfolio/profile.png" style="border-radius: 50%; height: 350px; width: 350px">
-                    </div>
-                    <div class="intro-text">
-                        <span class="name">Hello! <br>I'm Alessandro Arioli</span>
-                        <hr class="star-light">
-                        <span class="skills">
-                            Full Stack Web Developer - Python, Ruby & Javascript Lover - IT Enthusiast
-                        </span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </header>
-
-    <!-- Portfolio Grid Section -->
-    <section id="portfolio">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12 text-center">
-                    <h2>Projects & Education</h2>
-                    <hr class="star-primary">
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-sm-12 col-sm-offset-2">
-                    <div class="col-sm-4 portfolio-item">
-                        <a href="#portfolioModal1" class="portfolio-link" data-toggle="modal">
-                            <div class="caption">
-                                <div class="caption-content">
-                                    <i class="fa fa-search-plus fa-3x"></i>
-                                </div>
-                            </div>
-                            <img src="img/portfolio/italianway.jpg" class="img-thumbnail" alt="">
-                        </a>
-                    </div>
-                    <div class="col-sm-4 portfolio-item">
-                        <a href="#portfolioModal2" class="portfolio-link" data-toggle="modal">
-                            <div class="caption">
-                                <div class="caption-content">
-                                    <i class="fa fa-search-plus fa-3x"></i>
-                                </div>
-                            </div>
-                            <img src="img/portfolio/kuldat.png" class="img-thumbnail" alt="">
-                        </a>
-                    </div>
-                    </div>
-                </div>
-                <div class="row">
-                  <div class="col-sm-6 portfolio-item">
-                      <a href="#portfolioModal4" class="portfolio-link" data-toggle="modal">
-                          <div class="caption">
-                              <div class="caption-content">
-                                  <i class="fa fa-search-plus fa-3x"></i>
-                              </div>
-                          </div>
-                          <img src="img/portfolio/ios_course.jpg" class="img-thumbnail" alt="">
-                      </a>
-                  </div>
-                  <div class="col-sm-6 portfolio-item">
-                      <a href="#portfolioModal5" class="portfolio-link" data-toggle="modal">
-                          <div class="caption">
-                              <div class="caption-content">
-                                  <i class="fa fa-search-plus fa-3x"></i>
-                              </div>
-                          </div>
-                          <img src="img/portfolio/c_sharp_dot_net.jpg" class="img-thumbnail" alt="">
-                      </a>
-                  </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section>
-        <div class="row">
-            <div class="col-lg-12 text-center">
-                <h2>Programming Languages Skills</h2>
-                <hr class="star-primary">
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-6 col-md-offset-3">
-                <canvas id="skillsChart"></canvas>
-            </div>
-            <div class="col-lg-8 col-lg-offset-2" style="text-align: center; padding-top: 3em">
-                <b>JavaScript: Vanilla, Ecmascript [5.0 ... 6], jQuery [2.2.x ... 3.2.1], Vue.js, ReactJS</b>
-            </div>
-        </div>
-    </section>
-
-    <!-- About Section -->
-    <section class="success" id="about">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12 text-center">
-                    <h2>About me</h2>
-                    <hr class="star-light">
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-8 col-md-offset-2" style="text-align: center">
-                        <p>Play/watch football, fps,action-adventure,action RPG and open world videogames; but also read classic, psychology and technical books.<br> I'm also an huge technology and hardware lover: create home automation and media center with raspberry pi, assemble and sell pc.</p>
-                    </div>
-                </div>
-        </div>
-    </section>
-
-    <!-- Contact Section -->
-    <section id="contact">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12 text-center">
-                    <h2>Contacts</h2>
-                    <hr class="star-primary">
-                    <p>
-                        <u>Email</u>: <a href="mailto:ale.arioli93@gmail.com">ale.arioli93@gmail.com</a>
-                        <p>
-                        <u>Telephone</u>: +39 339 7795 702
-                    </p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="text-center">
-        <div class="footer-above">
-            <div class="container">
-                <div class="row">
-                    <div class="footer-col col-md-6">
-                        <h3>Location</h3>
-                        <a href="https://www.google.com/maps/preview/@45.4654,9.1859,14z" target="_blank">
-                        <p>20100 Milan - Italy <br> 45.4654° N, 9.1859° E</p></a>
-                    </div>
-                    <div class="footer-col col-md-6">
-                        <h3>Around the Web</h3>
-                        <ul class="list-inline">
-                            <li>
-                                <a href="https://plus.google.com/103936596095553676570" class="btn-social btn-outline"><i class="fa fa-fw fa-google-plus"></i></a>
-                            </li>
-                            <li>
-                                <a href="https://it.linkedin.com/in/alessandro-arioli-25632aba" class="btn-social btn-outline"><i class="fa fa-fw fa-linkedin"></i></a>
-                            </li>
-                            <li>
-                                <a href="https://github.com/alessandroarioli" class="btn-social btn-outline"><i class="fa fa-fw fa-github"></i></a>
-                            </li>
-                            <li>
-                                <a href="http://www.alearioli.it/PhotosPortfolio/" class="btn-social btn-outline"><i class="fa fa-camera-retro" aria-hidden="true"></i></a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="footer-below">
-            <div class="container">
-                <div class="row">
-                    <div class="col-lg-12">
-                        Copyright &copy; Arioli Alessandro &nbsp;<span id="current-year"></span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </footer>
-
-    <!-- Scroll to Top Button (Only visible on small and extra-small screen sizes) -->
-    <div class="scroll-top page-scroll hidden-sm hidden-xs hidden-lg hidden-md">
-        <a class="btn btn-primary" href="#page-top">
-            <i class="fa fa-chevron-up"></i>
-        </a>
-    </div>
-
-    <!-- Portfolio Modals -->
-    <div class="portfolio-modal modal fade" id="portfolioModal1" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-content">
-            <div class="close-modal" data-dismiss="modal">
-                <div class="lr">
-                    <div class="rl">
-                    </div>
-                </div>
-            </div>
-            <div class="container">
-                <div class="row">
-                    <div class="col-lg-6 col-lg-offset-3">
-                        <div class="modal-body">
-                            <h3>ItalianWay Srl ­- Milan<br>Ruby on Rails 5 FullStack developer</h2>
-                            <hr class="star-primary">
-                            <div class="row">
-                                <div class="col-sm-6">
-                                    <img src="img/portfolio/italianway.jpg" class="img-responsive" alt="">
-                                </div>
-                                <div class="col-sm-6">
-                                    <img src="img/portfolio/software.jpg" class="img-responsive" style="padding-top: 5em"  alt="">
-                                </div>
-                            </div>
-
-                            <div class="job-details">
-
-                                <p>Full Stack Web Developer with these technologies:</p>
-    
-                                <p>Back end:
-                                    <ul>
-                                        <li>Ruby 2.3.1, 2.4.x, 2.5.x</li>
-                                        <li>Rails 5, 5.1.x </li>
-                                        <li>Postgres 9, 10</li>
-                                    </ul>
-                                </p>
-                                
-                                <p>Front end:
-                                    <ul>
-                                        <li>jQuery</li>
-                                        <li>ES6 with Webpack and Babel </li>
-                                        <li>Vue.js 2</li>
-                                    </ul>
-                                </p>
-    
-                                <p>
-                                    Devops:
-                                    <ul>
-                                        <li>Integration with AWS S3, Lambda, EC2, Postgres DB and Redis.</li>
-                                    </ul>
-                                </p>
-    
-                                <p>
-                                    Tools:
-                                    <ul>
-                                        <li>Atlassian Suite (JIRA, Bitbucket and Hipchat)</li>
-                                        <li>Rollbar for bugs tracking</li>
-                                    </ul>
-                                </p>
-                            </div>
-
-
-                            <p>SCRUM methodology with stand ups everyday, code reviews, pair programming and 2-weeks Sprints</p>
-                            <ul class="list-inline item-details">
-                                <li>Client:
-                                    <strong><a href="https://italianway.house">Italianway Srl</a>
-                                    </strong>
-                                </li>
-                                <li>Start Date:
-                                    <strong><a>September 2016</a>
-                                    </strong>
-                                </li>
-                                <li>Service:
-                                    <strong><a href="http://startbootstrap.com">Web Development</a>
-                                    </strong>
-                                </li>
-                            </ul>
-                            <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i> Close</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="portfolio-modal modal fade" id="portfolioModal2" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-content">
-            <div class="close-modal" data-dismiss="modal">
-                <div class="lr">
-                    <div class="rl">
-                    </div>
-                </div>
-            </div>
-            <div class="container">
-                <div class="row">
-                    <div class="col-lg-8 col-lg-offset-2">
-                        <div class="modal-body">
-                            <h3>Kuldat Srl ­Milano<br>Python Back End Developer and Big Data Scraping</h3>
-                            <hr class="star-primary">
-                            <div class="row">
-                                <div class="col-sm-6">
-                                    <img src="img/portfolio/kuldat.png" class="img-responsive" alt="">
-                                </div>
-                                <div class="col-sm-6">
-                                    <img src="img/portfolio/python.jpg" class="img-responsive" style="padding-top: 5em"  alt="">
-                                </div>
-                            </div>
-                            <p>Developing Web Applications (public and administration) with Pyramid, Flask and Django Web Frameworks with concurrency (Multiprocessing and Multithreading ) , building RESTful APIs (with SQLAlchemy, Colander and Celery) and Services (with Pandas, NumPy and Tesseract for OCR).<br><br>
-
-                            Big Data: Scraping with Selenium, XPath and Crypting with PyCrypto.<br>
-                            DB: Non Relational and Relational: MongoDB, PostgreSQL and Redis for caching</p>
-                            <ul class="list-inline item-details">
-                                <li>Client:
-                                    <strong><a href="http://kuldat.com">Kuldat Srl</a>
-                                    </strong>
-                                </li>
-                                <li>Start Date:
-                                    <strong><a>November 2015</a>
-                                    </strong>
-                                </li>
-                                <li>End Date:
-                                    <strong><a>August 2016</a>
-                                    </strong>
-                                </li>
-                                <li>Service:
-                                    <strong><a href="http://startbootstrap.com">Web Development</a>
-                                    </strong>
-                                </li>
-                            </ul>
-                            <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i> Close</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="portfolio-modal modal fade" id="portfolioModal4" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-content">
-            <div class="close-modal" data-dismiss="modal">
-                <div class="lr">
-                    <div class="rl">
-                    </div>
-                </div>
-            </div>
-            <div class="container">
-                <div class="row">
-                    <div class="col-lg-8 col-lg-offset-2">
-                        <div class="modal-body">
-                            <h2>300 hours of programming on the apps on Apple iOS native language Swift</h2>
-                            <hr class="star-primary">
-                            <img src="img/portfolio/ios_course.jpg" class="img-responsive img-centered" alt="">
-                            <p><b>Technical modules:</b><br><br>
-                                - Foundamentals of logic programming;<br>
-                                - Foundamentals of object-oriented programming;<br>
-                                - Foundamentals of Swift programming;<br>
-                                - Development ex novo and reuse of Legacy Code (API in Objective-C, Design Patterns of Cocoa/Cocoa Touch);<br>
-                                - Intruduction iOS 8, SDK and OS Layer technologies;<br>
-                                - Components of the Operating System (BVC, MVC, Map Kit, location API);<br>
-                                - Graphics for Mobile web;<br>
-                                - Technologies of access to data on iOS (SQLite, iCloud and CoreData );<br>
-                                - Design mobile applications.<br><br>
-
-                                <b>Soft Skills:</b> The course also worked issues that develop transversal skills concerning work in team through the use of practical tests, first individually and then with group.</p>
-                            <ul class="list-inline item-details">
-                                <li>Client:
-                                    <strong><a href="http://www.mi.camcom.it/c/document_library/get_file?uuid=e0c6c469-59c2-4628-9e97-5221c0da9fe7&groupId=10157">Training companies IFOA Milan with Regione Lombardia #Project Networks Expo</a>
-                                    </strong>
-                                </li><br>
-                                <li>Start Date:
-                                    <strong><a>June 2015</a>
-                                    </strong>
-                                </li>
-                                <li>End Date:
-                                    <strong><a>September 2015</a>
-                                    </strong>
-                                </li>
-                                <li>Service:
-                                    <strong><a>Mobile Development</a>
-                                    </strong>
-                                </li>
-                            </ul>
-                            <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i> Close</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="portfolio-modal modal fade" id="portfolioModal5" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-content">
-            <div class="close-modal" data-dismiss="modal">
-                <div class="lr">
-                    <div class="rl">
-                    </div>
-                </div>
-            </div>
-            <div class="container">
-                <div class="row">
-                    <div class="col-lg-8 col-lg-offset-2">
-                        <div class="modal-body">
-                            <h2>post-graduate Software Developer School at IFOA: <br>from the development of application software to the design of complex architectures.</h2>
-                            <hr class="star-primary">
-                            <img src="img/portfolio/c_sharp_dot_net.jpg" class="img-responsive img-centered" alt="">
-                            <p><b>Technical modules:</b><br><br>
-                                - Organization tools and MsOffice;<br>
-                                - Operating Systems;<br>
-                                - Structure and implementation of SQL Server;<br>
-                                - Web services: DNS, FTP services, IIS and HTTPD;<br>
-                                - Foundamentals of logic programming;<br>
-                                - Developing Software Applications with Visual Studio C#;<br>
-                                - Technologies of access to data: use of ADO.Net and LINQ to SQL;<br>
-                                - Developing Web Applications with ASP.NET: creations of Web Forms and MVC;<br>
-                                - DB access and JavaScript client.<br><br>
-                                Accessibility of websites and SEO methodologies to code according to the parameters of the W3C, Google Adwords and keyword advertising.<br><br>
-
-                                <b>Soft Skills:</b> The course also worked issues and developing soft skills mainly on issues on interpersonal communication in public. We also attended Eight hours on safety issues in the workplace.</p>
-                            <ul class="list-inline item-details">
-                                <li>Client:
-                                    <strong><a href="http://www.ifoa.it/allegati/toscanagg_%20software%20developer.pdf">Ifoa Milan</a>
-                                    </strong>
-                                </li>
-                                <li>Start Date:
-                                    <strong><a>February 2015</a>
-                                    </strong>
-                                </li>
-                                <li>End Date:
-                                    <strong><a>May 2015</a>
-                                    </strong>
-                                </li>
-                                <li>Service:
-                                    <strong><a>Software Development in Windows Env</a>
-                                    </strong>
-                                </li>
-                            </ul>
-                            <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i> Close</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        document.getElementById('current-year').innerHTML = new Date().getFullYear();
-    </script>
-
-    <!-- jQuery -->
-    <script src="vendor/jquery/jquery.min.js"></script>
-
-    <!-- Bootstrap Core JavaScript -->
-    <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
-
-    <!-- Plugin JavaScript -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js"></script>
-
-    <!-- Contact Form JavaScript -->
-    <script src="js/jqBootstrapValidation.js"></script>
-
-    <!-- Particles.js CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
-
-    <!-- Background -->
-    <script src="js/particles.js"></script>
-
-    <!-- Theme JavaScript -->
-    <script src="js/freelancer.min.js"></script>
-
-    <!-- The chart of skills -->
-    <script src="js/chart_skills.js"></script>
-
+<footer>
+    <p>© 2025 My Portfolio | Built with 💻 and ☕</p>
+</footer>
 </body>
 </html>
