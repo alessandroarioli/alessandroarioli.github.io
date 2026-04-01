@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Geo Guess</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: #0a0a1a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            color: #fafafa;
+            overflow: hidden;
+        }
+
+        #app {
+            position: relative;
+            width: 480px;
+            max-width: 100vw;
+            text-align: center;
+        }
+
+        canvas {
+            display: block;
+            margin: 0 auto;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            margin-bottom: 4px;
+            letter-spacing: -0.02em;
+        }
+        h1 span { color: #34d399; }
+
+        .subtitle {
+            color: #a1a1aa;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+        }
+
+        #hud {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            margin: 16px 0;
+        }
+
+        .hud-item {
+            background: rgba(255,255,255,0.06);
+            padding: 6px 16px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .hud-item .label { color: #a1a1aa; font-weight: 400; font-size: 0.8rem; }
+        .hud-item .val { color: #34d399; }
+        .hud-item .val.wrong { color: #ef4444; }
+
+        #message {
+            min-height: 36px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin: 12px 0;
+            transition: color 0.2s;
+        }
+        #message.correct { color: #34d399; }
+        #message.wrong { color: #ef4444; }
+        #message.info { color: #818cf8; }
+
+        #choices {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            padding: 0 12px;
+            margin-bottom: 16px;
+        }
+
+        .choice-btn {
+            padding: 12px 8px;
+            border: 1px solid #27272a;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.04);
+            color: #fafafa;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .choice-btn:hover:not(:disabled) {
+            border-color: #818cf8;
+            background: rgba(129,140,248,0.1);
+            transform: translateY(-1px);
+        }
+        .choice-btn:disabled { cursor: default; opacity: 0.7; }
+        .choice-btn.correct-choice { border-color: #34d399; background: rgba(52,211,153,0.15); color: #34d399; }
+        .choice-btn.wrong-choice { border-color: #ef4444; background: rgba(239,68,68,0.1); color: #ef4444; }
+
+        .action-btn {
+            padding: 12px 32px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.15s, box-shadow 0.15s;
+            margin: 4px;
+        }
+        .action-btn:hover { transform: translateY(-2px); }
+        .action-btn.primary { background: #6366f1; color: white; }
+        .action-btn.green { background: #059669; color: white; }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 12px;
+            color: #71717a;
+            text-decoration: none;
+            font-size: 0.85rem;
+            border: 1px solid #27272a;
+            padding: 6px 16px;
+            border-radius: 6px;
+            transition: color 0.2s;
+        }
+        .back-link:hover { color: #a1a1aa; }
+
+        #startOverlay {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: rgba(10,10,26,0.92);
+            z-index: 10;
+            border-radius: 12px;
+            padding: 24px;
+        }
+        #startOverlay.hidden { display: none; }
+        #startOverlay p { color: #a1a1aa; margin-bottom: 20px; font-size: 0.95rem; line-height: 1.6; }
+        .controls-hint { color: #71717a; font-size: 0.8rem; margin-top: 12px; }
+
+        @media (max-width: 500px) {
+            canvas { width: 320px !important; height: 320px !important; }
+            h1 { font-size: 1.4rem; }
+            .choice-btn { font-size: 0.85rem; padding: 10px 6px; }
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <h1>&#127758; Geo <span>Guess</span></h1>
+    <p class="subtitle">Where in the world did the pin land?</p>
+
+    <canvas id="globe" width="380" height="380"></canvas>
+
+    <div id="hud">
+        <div class="hud-item"><span class="label">Score</span> <span class="val" id="scoreVal">0</span></div>
+        <div class="hud-item"><span class="label">Round</span> <span class="val" id="roundVal">1/10</span></div>
+        <div class="hud-item"><span class="label">Streak</span> <span class="val" id="streakVal">0</span></div>
+    </div>
+
+    <div id="message" class="info">Click the globe to spin!</div>
+
+    <div id="choices"></div>
+
+    <div id="actionArea">
+        <a href="/" class="back-link">Back to Portfolio</a>
+    </div>
+
+    <div id="startOverlay">
+        <h1>&#127758; Geo <span>Guess</span></h1>
+        <p>The globe spins and stops on a random country.<br>Can you guess where the pin landed?</p>
+        <button class="action-btn primary" id="startBtn">Start Game</button>
+        <a href="/" class="back-link">Back to Portfolio</a>
+    </div>
+</div>
+
+<script>
+// ---- COUNTRY DATABASE ----
+const COUNTRIES = [
+    // [name, lat, lng]
+    // Africa
+    ["Nigeria", 9.08, 7.49], ["Egypt", 26.82, 30.80], ["South Africa", -30.56, 22.94],
+    ["Kenya", -0.02, 37.91], ["Ethiopia", 9.15, 40.49], ["Ghana", 7.95, -1.02],
+    ["Tanzania", -6.37, 34.89], ["Morocco", 31.79, -7.09], ["Algeria", 28.03, 1.66],
+    ["Sudan", 12.86, 30.22], ["Uganda", 1.37, 32.29], ["Mozambique", -18.67, 35.53],
+    ["Madagascar", -18.77, 46.87], ["Angola", -11.20, 17.87], ["Cameroon", 7.37, 12.35],
+    ["Mali", 17.57, -4.00], ["Senegal", 14.50, -14.45], ["Tunisia", 33.89, 9.54],
+    ["Libya", 26.34, 17.23], ["Ivory Coast", 7.54, -5.55], ["DR Congo", -4.04, 21.76],
+    ["Zambia", -13.13, 27.85], ["Zimbabwe", -19.02, 29.15], ["Namibia", -22.96, 18.49],
+    ["Botswana", -22.33, 24.68], ["Somalia", 5.15, 46.20],
+
+    // Europe
+    ["France", 46.23, 2.21], ["Germany", 51.17, 10.45], ["United Kingdom", 55.38, -3.44],
+    ["Italy", 41.87, 12.57], ["Spain", 40.46, -3.75], ["Poland", 51.92, 19.15],
+    ["Romania", 45.94, 24.97], ["Netherlands", 52.13, 5.29], ["Belgium", 50.50, 4.47],
+    ["Sweden", 60.13, 18.64], ["Norway", 60.47, 8.47], ["Finland", 61.92, 25.75],
+    ["Portugal", 39.40, -8.22], ["Greece", 39.07, 21.82], ["Czech Republic", 49.82, 15.47],
+    ["Austria", 47.52, 14.55], ["Switzerland", 46.82, 8.23], ["Hungary", 47.16, 19.50],
+    ["Ireland", 53.41, -8.24], ["Denmark", 56.26, 9.50], ["Serbia", 44.02, 21.01],
+    ["Croatia", 45.10, 15.20], ["Bulgaria", 42.73, 25.49], ["Slovakia", 48.67, 19.70],
+    ["Iceland", 64.96, -19.02], ["Ukraine", 48.38, 31.17], ["Belarus", 53.71, 27.95],
+    ["Lithuania", 55.17, 23.88], ["Latvia", 56.88, 24.60], ["Estonia", 58.60, 25.01],
+
+    // Asia
+    ["China", 35.86, 104.20], ["India", 20.59, 78.96], ["Japan", 36.20, 138.25],
+    ["South Korea", 35.91, 127.77], ["Indonesia", -0.79, 113.92], ["Thailand", 15.87, 100.99],
+    ["Vietnam", 14.06, 108.28], ["Philippines", 12.88, 121.77], ["Malaysia", 4.21, 101.98],
+    ["Turkey", 38.96, 35.24], ["Saudi Arabia", 23.89, 45.08], ["Iran", 32.43, 53.69],
+    ["Iraq", 33.22, 43.68], ["Pakistan", 30.38, 69.35], ["Bangladesh", 23.68, 90.36],
+    ["Myanmar", 21.91, 95.96], ["Nepal", 28.39, 84.12], ["Sri Lanka", 7.87, 80.77],
+    ["Mongolia", 46.86, 103.85], ["Cambodia", 12.57, 104.99],
+    ["Kazakhstan", 48.02, 66.92], ["Uzbekistan", 41.38, 64.59],
+    ["Afghanistan", 33.94, 67.71], ["Israel", 31.05, 34.85],
+    ["Jordan", 30.59, 36.24], ["Syria", 34.80, 38.99],
+    ["United Arab Emirates", 23.42, 53.85], ["Oman", 21.51, 55.92],
+    ["Laos", 19.86, 102.50], ["Taiwan", 23.70, 120.96],
+
+    // North America
+    ["United States", 37.09, -95.71], ["Canada", 56.13, -106.35], ["Mexico", 23.63, -102.55],
+    ["Cuba", 21.52, -77.78], ["Guatemala", 15.78, -90.23], ["Honduras", 15.20, -86.24],
+    ["Nicaragua", 12.87, -85.21], ["Costa Rica", 9.75, -83.75], ["Panama", 8.54, -80.78],
+    ["Jamaica", 18.11, -77.30], ["Haiti", 18.97, -72.29],
+    ["Dominican Republic", 18.74, -70.16], ["El Salvador", 13.79, -88.90],
+
+    // South America
+    ["Brazil", -14.24, -51.93], ["Argentina", -38.42, -63.62], ["Colombia", 4.57, -74.30],
+    ["Peru", -9.19, -75.02], ["Venezuela", 6.42, -66.59], ["Chile", -35.68, -71.54],
+    ["Ecuador", -1.83, -78.18], ["Bolivia", -16.29, -63.59], ["Paraguay", -23.44, -58.44],
+    ["Uruguay", -32.52, -55.77], ["Guyana", 4.86, -58.93], ["Suriname", 3.92, -56.03],
+
+    // Oceania
+    ["Australia", -25.27, 133.78], ["New Zealand", -40.90, 174.89],
+    ["Papua New Guinea", -6.31, 143.96], ["Fiji", -17.71, 178.07],
+];
+
+// ---- SIMPLIFIED CONTINENT OUTLINES ----
+// Each continent = array of polygons, each polygon = [[lat,lng], ...]
+const CONTINENTS = [
+    // Africa
+    [[[35.9,-5.3],[37.1,10.2],[32.1,32.3],[31.2,32.5],[22.0,36.5],[12.1,44.0],[11.6,51.4],[2.0,41.5],[-1.5,41.8],[-11.7,40.4],[-15.5,40.5],[-25.6,35.0],[-34.8,20.0],[-34.4,18.3],[-29.0,16.5],[-22.0,14.5],[-17.1,11.8],[-12.3,13.8],[-6.0,12.3],[4.4,2.5],[5.6,1.2],[6.1,1.0],[4.3,-7.4],[5.1,-4.0],[5.3,-1.5],[6.7,-2.4],[4.0,-9.5],[6.6,-11.3],[0.2,-9.3],[-5.9,12.0],[-3.5,14.6],[7.0,14.2],[10.8,15.3],[14.7,17.5],[15.0,16.0],[13.0,2.1],[11.0,14.0],[14.5,13.5],[20.7,18.0],[24.0,11.3],[33.2,11.6],[35.8,-0.8],[35.9,-5.3]]],
+    // Europe
+    [[[36.0,-9.5],[36.5,-6.3],[36.2,-5.4],[38.7,-9.5],[39.5,-9.1],[42.1,-8.9],[43.4,-1.8],[43.3,3.0],[46.2,6.3],[48.5,2.3],[48.8,-4.5],[50.7,1.8],[51.1,3.4],[53.4,5.0],[55.0,8.1],[54.6,12.1],[55.3,15.1],[53.9,14.3],[51.1,14.9],[50.1,17.0],[48.0,17.2],[47.1,15.8],[42.5,18.5],[39.6,20.0],[37.9,23.7],[40.7,26.3],[41.2,29.1],[42.0,28.0],[43.4,28.6],[44.4,26.3],[45.4,29.5],[46.1,30.2],[48.4,38.0],[55.2,28.5],[56.2,21.1],[54.3,18.6],[57.1,18.3],[57.5,24.0],[59.4,28.0],[60.0,24.9],[64.0,28.0],[69.0,28.5],[71.2,28.0],[71.0,26.0],[67.2,15.5],[62.0,5.1],[58.0,7.0],[57.0,12.0],[56.0,8.4],[56.0,12.6],[53.0,9.0],[51.5,6.9],[50.4,1.5],[49.2,-1.0],[48.4,-4.7],[47.3,-1.5],[44.0,-1.3],[43.8,3.8],[43.1,5.8],[43.5,7.4],[39.2,9.5],[37.5,15.1],[40.5,18.5],[41.8,16.6],[45.5,13.7],[46.3,15.5],[44.9,14.1],[42.6,18.2],[41.0,17.0],[39.7,20.0],[35.5,23.5],[35.2,26.1],[36.4,28.2],[38.3,26.1],[40.2,24.0],[40.7,29.0],[41.0,28.8],[42.0,27.5],[43.5,28.6],[46.5,31.0],[48.0,38.0],[55.3,28.2],[59.3,31.0],[60.1,29.8],[61.5,31.2],[65.0,25.5],[69.1,33.0],[69.9,30.0],[70.1,25.0],[58.5,6.0],[62.5,5.2],[63.1,9.6],[59.0,11.4],[61.8,4.5],[57.9,7.1],[36.0,-9.5]]],
+    // Asia
+    [[[42.0,28.0],[41.0,29.0],[41.0,36.0],[37.0,36.3],[36.5,36.2],[33.5,35.5],[32.0,34.6],[31.2,32.5],[29.5,35.0],[26.0,36.7],[12.5,43.2],[12.6,45.0],[22.0,59.5],[25.3,51.0],[26.8,56.4],[22.0,60.0],[25.5,66.5],[27.2,62.5],[24.9,67.0],[21.0,72.0],[23.5,70.0],[28.5,68.5],[30.0,67.0],[35.3,61.0],[37.2,56.0],[39.0,53.0],[37.3,49.0],[40.5,43.5],[42.0,28.0]]],
+    // Asia main (Russia-China-SEA)
+    [[[42.5,44.0],[43.5,40.0],[46.5,38.0],[48.5,38.5],[55.5,28.5],[59.5,31.0],[61.5,31.0],[60.5,50.0],[54.5,55.0],[55.0,68.0],[51.0,80.0],[50.5,87.0],[55.0,91.0],[56.0,94.0],[52.0,106.0],[50.0,108.0],[47.8,115.5],[42.5,131.0],[43.0,132.0],[46.0,134.0],[49.0,132.0],[54.0,137.0],[55.0,141.0],[59.5,143.0],[62.0,149.0],[64.0,161.0],[65.0,169.0],[66.0,171.0],[68.0,170.0],[69.5,178.0],[71.5,180.0],[72.0,140.0],[73.5,120.0],[72.0,105.0],[73.5,86.5],[70.0,84.0],[68.0,76.5],[69.5,60.5],[68.5,57.0],[67.5,53.0],[65.0,57.0],[61.0,68.5],[55.0,73.0],[52.0,62.0],[50.0,52.0],[47.5,52.0],[45.0,50.0],[42.5,53.0],[40.0,53.0],[35.5,53.0],[37.5,57.5],[33.0,59.0],[30.0,67.0],[28.5,70.0],[27.0,75.0],[21.0,78.0],[16.0,80.5],[8.3,77.0],[6.0,80.5],[9.5,79.0],[16.5,82.0],[22.0,88.0],[21.0,92.0],[26.0,97.5],[28.5,97.0],[28.0,92.0],[27.5,89.0],[28.0,86.5],[35.5,79.0],[36.5,76.0],[37.0,74.0],[42.5,80.0],[44.0,80.0],[45.5,73.5],[49.5,87.5],[46.0,91.5],[42.0,87.5],[39.5,74.0],[35.5,79.0],[28.5,97.0],[22.0,99.0],[20.0,100.0],[21.5,102.5],[18.0,107.0],[10.0,106.0],[8.5,105.0],[1.5,104.0],[1.3,103.5],[6.2,100.0],[7.0,100.5],[10.0,99.0],[13.5,101.0],[18.5,106.0],[21.5,108.0],[21.5,107.5],[23.5,108.5],[20.0,110.5],[18.0,109.5],[22.0,113.0],[30.0,122.5],[32.0,121.5],[35.0,119.5],[37.5,122.5],[39.5,121.5],[40.5,122.0],[41.0,124.0],[43.0,131.5],[42.5,44.0]]],
+    // North America
+    [[[71.5,-180],[72.0,-156.8],[71.3,-155.6],[70.0,-141.0],[68.5,-137.0],[60.0,-141.0],[60.0,-139.0],[55.0,-130.0],[54.5,-133.0],[50.0,-128.0],[48.3,-124.8],[42.0,-124.5],[34.5,-120.5],[32.5,-117.1],[27.0,-113.0],[23.5,-110.0],[20.0,-105.5],[15.9,-95.0],[15.3,-92.0],[14.5,-90.5],[14.0,-87.0],[11.0,-85.5],[8.0,-77.5],[8.5,-77.0],[9.5,-79.5],[9.5,-82.5],[11.0,-83.5],[14.5,-83.5],[16.0,-88.0],[17.8,-87.8],[18.5,-88.2],[21.5,-87.0],[21.5,-90.0],[26.5,-97.5],[29.5,-94.5],[29.5,-89.5],[30.5,-88.0],[30.0,-84.0],[25.0,-80.5],[25.2,-81.5],[30.5,-82.0],[32.0,-81.0],[36.5,-75.5],[37.5,-76.0],[39.0,-74.5],[40.5,-74.0],[41.5,-70.0],[42.5,-71.0],[44.0,-68.0],[44.5,-67.0],[47.0,-67.0],[45.0,-61.0],[46.5,-61.0],[47.5,-59.5],[49.0,-63.5],[51.0,-56.0],[52.5,-56.0],[53.5,-58.5],[52.5,-66.0],[55.0,-60.0],[58.0,-62.0],[60.5,-64.5],[62.0,-75.5],[58.0,-78.5],[56.5,-80.0],[57.5,-93.0],[63.0,-92.0],[64.0,-96.0],[67.0,-111.0],[69.5,-131.0],[68.5,-137.0],[69.0,-141.0],[69.8,-141.0],[71.3,-155.0],[71.5,-180]]],
+    // South America
+    [[[-5.0,-81.0],[-4.0,-80.0],[0.0,-80.0],[1.5,-79.0],[1.5,-77.0],[4.0,-77.5],[6.0,-77.5],[8.5,-77.0],[12.5,-72.0],[12.0,-70.0],[10.5,-67.0],[8.0,-60.0],[7.0,-58.0],[6.0,-57.5],[5.3,-54.0],[4.5,-52.0],[2.5,-51.0],[0.5,-50.0],[-1.0,-48.5],[-5.0,-35.5],[-12.5,-38.5],[-15.0,-39.0],[-18.0,-39.5],[-22.5,-41.5],[-23.0,-42.0],[-28.5,-48.5],[-33.5,-53.5],[-34.5,-55.0],[-37.0,-57.0],[-40.0,-62.0],[-45.0,-65.5],[-47.0,-66.0],[-50.0,-69.0],[-52.0,-68.5],[-54.0,-71.0],[-55.5,-68.5],[-54.0,-67.0],[-51.5,-69.0],[-48.0,-73.0],[-42.0,-73.5],[-40.0,-72.0],[-37.0,-73.5],[-33.0,-71.5],[-27.0,-70.5],[-19.0,-70.0],[-18.0,-70.5],[-15.0,-75.5],[-6.5,-81.0],[-5.0,-81.0]]],
+    // Australia
+    [[[-12.5,131.0],[-12.0,136.0],[-14.5,136.0],[-14.8,131.5],[-13.5,129.5],[-15.0,128.0],[-17.5,123.0],[-19.0,121.5],[-20.5,119.0],[-22.0,114.0],[-26.0,113.0],[-28.5,114.5],[-30.5,115.0],[-33.0,115.5],[-34.5,116.0],[-35.0,117.5],[-34.5,119.5],[-34.0,121.5],[-34.0,124.5],[-32.5,131.5],[-33.0,134.0],[-35.0,136.0],[-35.5,138.0],[-36.5,137.0],[-37.5,140.0],[-39.0,146.0],[-38.5,146.5],[-37.5,150.0],[-33.5,152.0],[-29.0,153.5],[-27.5,153.5],[-25.0,152.5],[-23.5,150.5],[-22.5,149.5],[-20.0,148.5],[-19.0,146.5],[-16.5,146.0],[-14.5,143.5],[-12.5,142.5],[-11.0,142.0],[-10.5,142.5],[-11.5,143.0],[-11.0,143.5],[-12.0,141.5],[-12.5,131.0]]],
+];
+
+// ---- GLOBE SETUP ----
+const canvas = document.getElementById('globe');
+const ctx = canvas.getContext('2d');
+const CX = canvas.width / 2;
+const CY = canvas.height / 2;
+const R = 175; // globe radius
+
+let rotation = 0; // current longitude offset in radians
+let spinVelocity = 0;
+let targetCountry = null;
+let pinVisible = false;
+let gamePhase = 'idle'; // idle, spinning, guessing, result, gameover
+let roundNum = 0;
+let totalRounds = 10;
+let scoreVal = 0;
+let streak = 0;
+let usedCountries = [];
+let animFrame = null;
+let idleRotation = 0;
+
+// ---- PROJECTION ----
+function project(lat, lng) {
+    let latR = lat * Math.PI / 180;
+    let lngR = lng * Math.PI / 180 + rotation;
+    let x = R * Math.cos(latR) * Math.sin(lngR);
+    let y = -R * Math.sin(latR);
+    let z = Math.cos(latR) * Math.cos(lngR);
+    return { x: CX + x, y: CY + y, visible: z > 0 };
+}
+
+// ---- DRAWING ----
+function drawGlobe() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Space background
+    ctx.fillStyle = '#06061a';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Stars
+    for (let i = 0; i < 80; i++) {
+        let sx = (i * 137.5 + 20) % canvas.width;
+        let sy = (i * 97.3 + 10) % canvas.height;
+        let br = 0.2 + (Math.sin(Date.now() * 0.001 + i) + 1) * 0.15;
+        ctx.fillStyle = `rgba(255,255,255,${br})`;
+        ctx.fillRect(sx, sy, 1.2, 1.2);
+    }
+
+    // Globe glow
+    let glowGrad = ctx.createRadialGradient(CX, CY, R - 10, CX, CY, R + 40);
+    glowGrad.addColorStop(0, 'rgba(52,211,153,0.06)');
+    glowGrad.addColorStop(1, 'rgba(52,211,153,0)');
+    ctx.fillStyle = glowGrad;
+    ctx.beginPath(); ctx.arc(CX, CY, R + 40, 0, Math.PI * 2); ctx.fill();
+
+    // Ocean
+    let oceanGrad = ctx.createRadialGradient(CX - 30, CY - 30, 10, CX, CY, R);
+    oceanGrad.addColorStop(0, '#1e6091');
+    oceanGrad.addColorStop(0.7, '#1a4d73');
+    oceanGrad.addColorStop(1, '#0d3b5e');
+    ctx.fillStyle = oceanGrad;
+    ctx.beginPath(); ctx.arc(CX, CY, R, 0, Math.PI * 2); ctx.fill();
+
+    // Clip to globe
+    ctx.save();
+    ctx.beginPath(); ctx.arc(CX, CY, R, 0, Math.PI * 2); ctx.clip();
+
+    // Grid lines (meridians and parallels)
+    ctx.strokeStyle = 'rgba(255,255,255,0.06)';
+    ctx.lineWidth = 0.5;
+    // Parallels
+    for (let lat = -60; lat <= 60; lat += 30) {
+        ctx.beginPath();
+        for (let lng = -180; lng <= 180; lng += 3) {
+            let p = project(lat, lng);
+            if (lng === -180) ctx.moveTo(p.x, p.y);
+            else if (p.visible) ctx.lineTo(p.x, p.y);
+        }
+        ctx.stroke();
+    }
+    // Meridians
+    for (let lng = -180; lng < 180; lng += 30) {
+        ctx.beginPath();
+        for (let lat = -90; lat <= 90; lat += 3) {
+            let p = project(lat, lng);
+            if (lat === -90) ctx.moveTo(p.x, p.y);
+            else if (p.visible) ctx.lineTo(p.x, p.y);
+        }
+        ctx.stroke();
+    }
+
+    // Draw continents
+    let landColors = ['#2d8a4e','#2a7f47','#348f52','#2d8a4e','#2a7f47','#348f52','#2d8a4e'];
+    CONTINENTS.forEach((continent, ci) => {
+        continent.forEach(poly => {
+            ctx.fillStyle = landColors[ci % landColors.length];
+            ctx.strokeStyle = '#1e6b38';
+            ctx.lineWidth = 0.8;
+            ctx.beginPath();
+            let started = false;
+            let anyVisible = false;
+            for (let i = 0; i < poly.length; i++) {
+                let p = project(poly[i][0], poly[i][1]);
+                if (p.visible) anyVisible = true;
+                if (!started) { ctx.moveTo(p.x, p.y); started = true; }
+                else ctx.lineTo(p.x, p.y);
+            }
+            if (anyVisible) {
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+            }
+        });
+    });
+
+    // Pin
+    if (pinVisible && targetCountry) {
+        let p = project(targetCountry[1], targetCountry[2]);
+        if (p.visible) {
+            // Pin shadow
+            ctx.fillStyle = 'rgba(0,0,0,0.3)';
+            ctx.beginPath(); ctx.ellipse(p.x + 2, p.y + 2, 5, 3, 0, 0, Math.PI * 2); ctx.fill();
+
+            // Pin stick
+            ctx.strokeStyle = '#991b1b';
+            ctx.lineWidth = 2.5;
+            ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(p.x, p.y - 26); ctx.stroke();
+
+            // Pin head
+            ctx.fillStyle = '#ef4444';
+            ctx.shadowColor = '#ef4444';
+            ctx.shadowBlur = 10;
+            ctx.beginPath(); ctx.arc(p.x, p.y - 26, 8, 0, Math.PI * 2); ctx.fill();
+            ctx.shadowBlur = 0;
+            ctx.fillStyle = '#fca5a5';
+            ctx.beginPath(); ctx.arc(p.x - 2, p.y - 28, 3, 0, Math.PI * 2); ctx.fill();
+
+            // Pulse ring
+            let pulse = (Date.now() % 1500) / 1500;
+            ctx.strokeStyle = `rgba(239,68,68,${0.6 - pulse * 0.6})`;
+            ctx.lineWidth = 2;
+            ctx.beginPath(); ctx.arc(p.x, p.y, 8 + pulse * 20, 0, Math.PI * 2); ctx.stroke();
+        }
+    }
+
+    ctx.restore();
+
+    // Atmosphere rim
+    ctx.strokeStyle = 'rgba(100,200,255,0.15)';
+    ctx.lineWidth = 3;
+    ctx.beginPath(); ctx.arc(CX, CY, R, 0, Math.PI * 2); ctx.stroke();
+
+    // Specular highlight
+    let specGrad = ctx.createRadialGradient(CX - 60, CY - 60, 10, CX - 40, CY - 40, R);
+    specGrad.addColorStop(0, 'rgba(255,255,255,0.12)');
+    specGrad.addColorStop(0.4, 'rgba(255,255,255,0)');
+    ctx.fillStyle = specGrad;
+    ctx.beginPath(); ctx.arc(CX, CY, R, 0, Math.PI * 2); ctx.fill();
+}
+
+// ---- GAME LOGIC ----
+function pickCountry() {
+    let available = COUNTRIES.filter(c => !usedCountries.includes(c[0]));
+    if (available.length === 0) {
+        usedCountries = [];
+        available = COUNTRIES;
+    }
+    let c = available[Math.floor(Math.random() * available.length)];
+    usedCountries.push(c[0]);
+    return c;
+}
+
+function getChoices(correct) {
+    // Get 3 wrong answers, prefer same-ish region
+    let correctLat = correct[1], correctLng = correct[2];
+    let others = COUNTRIES.filter(c => c[0] !== correct[0]);
+
+    // Sort by distance, pick some nearby and some random
+    others.sort((a, b) => {
+        let da = Math.abs(a[1] - correctLat) + Math.abs(a[2] - correctLng);
+        let db = Math.abs(b[1] - correctLat) + Math.abs(b[2] - correctLng);
+        return da - db;
+    });
+
+    let nearby = others.slice(0, 15);
+    let wrong = [];
+    while (wrong.length < 3) {
+        let pool = wrong.length < 2 ? nearby : others;
+        let pick = pool[Math.floor(Math.random() * pool.length)];
+        if (!wrong.find(w => w[0] === pick[0])) wrong.push(pick);
+    }
+
+    let choices = [correct, ...wrong];
+    // Shuffle
+    for (let i = choices.length - 1; i > 0; i--) {
+        let j = Math.floor(Math.random() * (i + 1));
+        [choices[i], choices[j]] = [choices[j], choices[i]];
+    }
+    return choices;
+}
+
+function startSpin() {
+    targetCountry = pickCountry();
+    pinVisible = false;
+    gamePhase = 'spinning';
+    roundNum++;
+    updateHUD();
+
+    // Calculate target rotation to face the country
+    let targetLng = -targetCountry[2] * Math.PI / 180;
+    // Spin several full rotations + land on target
+    spinVelocity = 0.08 + Math.random() * 0.04;
+
+    let currentRot = rotation % (Math.PI * 2);
+    let totalSpin = Math.PI * 6 + (targetLng - currentRot); // ~3 full spins + offset
+
+    let spinDuration = 120 + Math.floor(Math.random() * 40); // frames
+    let frame = 0;
+
+    setMessage('Spinning...', 'info');
+    clearChoices();
+
+    function spinStep() {
+        frame++;
+        let t = frame / spinDuration;
+        // Ease out cubic
+        let ease = 1 - Math.pow(1 - t, 3);
+        rotation = currentRot + totalSpin * ease;
+
+        drawGlobe();
+
+        if (frame < spinDuration) {
+            animFrame = requestAnimationFrame(spinStep);
+        } else {
+            rotation = currentRot + totalSpin;
+            pinVisible = true;
+            gamePhase = 'guessing';
+            drawGlobe();
+            showChoices();
+            setMessage('Where did the pin land?', 'info');
+        }
+    }
+
+    if (animFrame) cancelAnimationFrame(animFrame);
+    spinStep();
+}
+
+function showChoices() {
+    let choices = getChoices(targetCountry);
+    let container = document.getElementById('choices');
+    container.innerHTML = '';
+
+    choices.forEach(c => {
+        let btn = document.createElement('button');
+        btn.className = 'choice-btn';
+        btn.textContent = c[0];
+        btn.onclick = () => handleGuess(c, btn);
+        container.appendChild(btn);
+    });
+}
+
+function clearChoices() {
+    document.getElementById('choices').innerHTML = '';
+}
+
+function handleGuess(chosen, btn) {
+    if (gamePhase !== 'guessing') return;
+    gamePhase = 'result';
+
+    let allBtns = document.querySelectorAll('.choice-btn');
+    allBtns.forEach(b => b.disabled = true);
+
+    if (chosen[0] === targetCountry[0]) {
+        btn.classList.add('correct-choice');
+        streak++;
+        let pts = 100 + streak * 20;
+        scoreVal += pts;
+        setMessage(`Correct! +${pts} points`, 'correct');
+    } else {
+        btn.classList.add('wrong-choice');
+        streak = 0;
+        // Highlight correct
+        allBtns.forEach(b => {
+            if (b.textContent === targetCountry[0]) b.classList.add('correct-choice');
+        });
+        setMessage(`Wrong! It was ${targetCountry[0]}`, 'wrong');
+    }
+
+    updateHUD();
+
+    setTimeout(() => {
+        if (roundNum >= totalRounds) {
+            endGame();
+        } else {
+            startSpin();
+        }
+    }, 2000);
+}
+
+function endGame() {
+    gamePhase = 'gameover';
+    clearChoices();
+    let pct = Math.round(scoreVal / (totalRounds * 120) * 100);
+    let emoji = pct >= 80 ? '&#127942;' : pct >= 50 ? '&#128170;' : '&#128064;';
+    setMessage(`${emoji} Final Score: ${scoreVal}`, 'info');
+
+    let area = document.getElementById('actionArea');
+    area.innerHTML = `
+        <button class="action-btn green" onclick="newGame()">Play Again</button>
+        <br><a href="/" class="back-link">Back to Portfolio</a>
+    `;
+}
+
+function newGame() {
+    scoreVal = 0; streak = 0; roundNum = 0;
+    usedCountries = [];
+    rotation = 0;
+    pinVisible = false;
+    updateHUD();
+    document.getElementById('actionArea').innerHTML = '<a href="/" class="back-link">Back to Portfolio</a>';
+    startSpin();
+}
+
+function setMessage(text, cls) {
+    let el = document.getElementById('message');
+    el.innerHTML = text;
+    el.className = cls;
+}
+
+function updateHUD() {
+    document.getElementById('scoreVal').textContent = scoreVal;
+    document.getElementById('roundVal').textContent = `${Math.min(roundNum, totalRounds)}/${totalRounds}`;
+    document.getElementById('streakVal').textContent = streak;
+}
+
+// ---- IDLE ANIMATION ----
+function idleLoop() {
+    if (gamePhase === 'idle') {
+        rotation += 0.005;
+        drawGlobe();
+    }
+    animFrame = requestAnimationFrame(idleLoop);
+}
+
+// ---- INIT ----
+document.getElementById('startBtn').addEventListener('click', () => {
+    document.getElementById('startOverlay').classList.add('hidden');
+    if (animFrame) cancelAnimationFrame(animFrame);
+    newGame();
+});
+
+// Start idle rotation
+idleLoop();
+</script>
+</body>
+</html>

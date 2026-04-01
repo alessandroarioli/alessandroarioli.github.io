@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Subway Run</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: #0f0f11;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Segoe UI', sans-serif;
+            overflow: hidden;
+        }
+
+        #gameWrapper {
+            position: relative;
+            width: 480px;
+            max-width: 100vw;
+        }
+
+        canvas {
+            display: block;
+            width: 100%;
+            height: auto;
+            border-radius: 12px;
+            box-shadow: 0 0 60px rgba(99, 102, 241, 0.2);
+        }
+
+        .overlay {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: rgba(15, 15, 17, 0.85);
+            border-radius: 12px;
+            color: #fafafa;
+            text-align: center;
+            padding: 24px;
+            z-index: 10;
+        }
+
+        .overlay.hidden { display: none; }
+
+        .overlay h1 {
+            font-size: 2.2rem;
+            margin-bottom: 8px;
+            letter-spacing: -0.02em;
+        }
+
+        .overlay h1 span { color: #818cf8; }
+
+        .overlay p {
+            color: #a1a1aa;
+            margin-bottom: 24px;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .overlay .score-display {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #fbbf24;
+            margin-bottom: 8px;
+        }
+
+        .overlay .coins-display {
+            font-size: 1.1rem;
+            color: #fbbf24;
+            margin-bottom: 24px;
+        }
+
+        .btn {
+            padding: 12px 32px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.15s, box-shadow 0.15s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn-play {
+            background: #6366f1;
+            color: white;
+            margin-bottom: 12px;
+        }
+
+        .btn-back {
+            background: transparent;
+            color: #a1a1aa;
+            border: 1px solid #27272a;
+            font-size: 0.85rem;
+            padding: 8px 20px;
+        }
+
+        .controls-hint {
+            color: #71717a;
+            font-size: 0.8rem;
+            margin-top: 12px;
+        }
+
+        #hud {
+            position: absolute;
+            top: 16px;
+            left: 16px;
+            right: 16px;
+            display: flex;
+            justify-content: space-between;
+            z-index: 5;
+            pointer-events: none;
+        }
+
+        .hud-item {
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(8px);
+            padding: 6px 14px;
+            border-radius: 8px;
+            color: #fafafa;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .hud-item .coin-icon { color: #fbbf24; }
+    </style>
+</head>
+<body>
+<div id="gameWrapper">
+    <canvas id="game" width="480" height="720"></canvas>
+
+    <div id="hud" class="hidden">
+        <div class="hud-item" id="hudScore">0m</div>
+        <div class="hud-item"><span class="coin-icon">&#9679;</span> <span id="hudCoins">0</span></div>
+    </div>
+
+    <!-- Start Screen -->
+    <div class="overlay" id="startScreen">
+        <h1><span>Subway</span> Run</h1>
+        <p>Dodge obstacles, collect coins, run as far as you can!</p>
+        <button class="btn btn-play" id="startBtn">Play</button>
+        <a href="/" class="btn btn-back">Back to Portfolio</a>
+        <div class="controls-hint">Arrow keys or swipe to move &middot; Up/Swipe up to jump &middot; Down/Swipe down to slide</div>
+    </div>
+
+    <!-- Game Over Screen -->
+    <div class="overlay hidden" id="gameOverScreen">
+        <h1>Game <span>Over</span></h1>
+        <div class="score-display" id="finalScore">0m</div>
+        <div class="coins-display"><span class="coin-icon">&#9679;</span> <span id="finalCoins">0</span> coins</div>
+        <button class="btn btn-play" id="restartBtn">Play Again</button>
+        <a href="/" class="btn btn-back">Back to Portfolio</a>
+    </div>
+</div>
+
+<script>
+const canvas = document.getElementById('game');
+const ctx = canvas.getContext('2d');
+const W = canvas.width;
+const H = canvas.height;
+
+// ---- CONSTANTS ----
+const LANES = [-1, 0, 1];
+const LANE_WIDTH = 100;
+const GROUND_Y = 540;
+const PLAYER_W = 44;
+const PLAYER_H = 80;
+const SLIDE_H = 30;
+const JUMP_FORCE = -18;
+const GRAVITY = 0.9;
+const VANISH_Y = 220;
+const VANISH_X = W / 2;
+const ROAD_TOP_W = 120;
+const ROAD_BOT_W = 380;
+
+let state, player, obstacles, coins, speed, score, coinCount, spawnTimer, frameId;
+let scenery = []; // buildings, trees, lampposts
+
+// ---- SEEDED RANDOM for consistent scenery ----
+let sceneSeed = 1;
+function seededRandom() {
+    sceneSeed = (sceneSeed * 16807) % 2147483647;
+    return (sceneSeed - 1) / 2147483646;
+}
+
+// ---- SCENERY GENERATION ----
+function generateScenery() {
+    scenery = [];
+    sceneSeed = 42;
+    // Generate items on both sides of the road at various depths
+    for (let i = 0; i < 60; i++) {
+        let z = i * 80 + seededRandom() * 40;
+        let side = (i % 2 === 0) ? -1 : 1;
+        let type;
+        let r = seededRandom();
+        if (r < 0.35) type = 'building';
+        else if (r < 0.6) type = 'tree';
+        else if (r < 0.75) type = 'lamppost';
+        else if (r < 0.88) type = 'bush';
+        else type = 'house';
+
+        let bColors = ['#5b6e8a','#7a6b5d','#8b7d6b','#6b7a8b','#7d6b5d','#9b8b7b','#6a7d8a','#8a7b6a'];
+        let roofColors = ['#c0392b','#8e44ad','#2c3e50','#d35400','#1abc9c','#7f8c8d'];
+
+        scenery.push({
+            z,
+            side,
+            type,
+            height: 60 + seededRandom() * 120,
+            width: 40 + seededRandom() * 50,
+            color: bColors[Math.floor(seededRandom() * bColors.length)],
+            roofColor: roofColors[Math.floor(seededRandom() * roofColors.length)],
+            windows: Math.floor(seededRandom() * 4) + 1,
+            windowRows: Math.floor(seededRandom() * 3) + 2,
+            treeGreen: `hsl(${100 + seededRandom() * 40}, ${50 + seededRandom() * 20}%, ${28 + seededRandom() * 15}%)`,
+            trunkW: 4 + seededRandom() * 4,
+            canopyR: 14 + seededRandom() * 18,
+            offset: seededRandom() * 30 + 10,
+        });
+    }
+}
+
+function initGame() {
+    player = {
+        lane: 0, targetLane: 0,
+        x: W / 2, y: GROUND_Y - PLAYER_H,
+        vy: 0, isJumping: false,
+        isSliding: false, slideTimer: 0,
+        laneX: W / 2, runCycle: 0,
+        armSwing: 0,
+    };
+    obstacles = [];
+    coins = [];
+    speed = 5;
+    score = 0;
+    coinCount = 0;
+    spawnTimer = 0;
+    generateScenery();
+    state = 'playing';
+}
+
+// ---- SPAWNING ----
+function laneToX(lane) {
+    return W / 2 + lane * LANE_WIDTH;
+}
+
+function spawnObstacle() {
+    let lane = LANES[Math.floor(Math.random() * 3)];
+    let type = Math.random() < 0.35 ? 'overhead' : 'barrier';
+    obstacles.push({ lane, z: 1200, type, w: 60, h: type === 'barrier' ? 50 : 40 });
+
+    if (Math.random() < 0.6) {
+        let coinLane = LANES[Math.floor(Math.random() * 3)];
+        let count = Math.floor(Math.random() * 3) + 1;
+        for (let i = 0; i < count; i++) {
+            coins.push({ lane: coinLane, z: 1200 + i * 80, collected: false });
+        }
+    }
+}
+
+// ---- UPDATE ----
+function update() {
+    if (state !== 'playing') return;
+
+    speed = 5 + score * 0.003;
+    if (speed > 16) speed = 16;
+    score += speed * 0.1;
+
+    player.laneX = laneToX(player.targetLane);
+    player.x += (player.laneX - player.x) * 0.18;
+    player.runCycle += speed * 0.15;
+    player.armSwing = Math.sin(player.runCycle) * 0.6;
+
+    if (player.isJumping) {
+        player.vy += GRAVITY;
+        player.y += player.vy;
+        if (player.y >= GROUND_Y - PLAYER_H) {
+            player.y = GROUND_Y - PLAYER_H;
+            player.vy = 0;
+            player.isJumping = false;
+        }
+    }
+
+    if (player.isSliding) {
+        player.slideTimer--;
+        if (player.slideTimer <= 0) player.isSliding = false;
+    }
+
+    spawnTimer -= speed;
+    if (spawnTimer <= 0) {
+        spawnObstacle();
+        spawnTimer = 250 + Math.random() * 200 - Math.min(score * 0.3, 120);
+        if (spawnTimer < 120) spawnTimer = 120;
+    }
+
+    for (let o of obstacles) o.z -= speed;
+    for (let c of coins) c.z -= speed;
+
+    // Collision
+    let pH = player.isSliding ? SLIDE_H : PLAYER_H;
+    let pY = player.isSliding ? GROUND_Y - SLIDE_H : player.y;
+    let pLeft = player.x - PLAYER_W / 2;
+    let pRight = player.x + PLAYER_W / 2;
+
+    for (let o of obstacles) {
+        if (o.z > 30 || o.z < -30) continue;
+        let oX = laneToX(o.lane);
+        if (pRight > oX - o.w / 2 + 8 && pLeft < oX + o.w / 2 - 8) {
+            if (o.type === 'barrier') {
+                if (pY + pH > GROUND_Y - o.h + 8) { gameOver(); return; }
+            } else {
+                let oBottom = GROUND_Y - 55;
+                if (pY < oBottom && pY + pH > oBottom - o.h && !player.isSliding) { gameOver(); return; }
+            }
+        }
+    }
+
+    for (let c of coins) {
+        if (c.collected || c.z > 30 || c.z < -30) continue;
+        if (Math.abs(player.x - laneToX(c.lane)) < 40) { c.collected = true; coinCount++; }
+    }
+
+    obstacles = obstacles.filter(o => o.z > -100);
+    coins = coins.filter(c => c.z > -100);
+
+    document.getElementById('hudScore').textContent = Math.floor(score) + 'm';
+    document.getElementById('hudCoins').textContent = coinCount;
+}
+
+// ---- PERSPECTIVE HELPERS ----
+function projectZ(z) {
+    let t = 1 - z / 1200;
+    if (t < 0) t = 0; if (t > 1) t = 1;
+    return { y: VANISH_Y + t * (GROUND_Y - VANISH_Y), scale: t };
+}
+
+function roadEdgeX(side, t) {
+    // Returns x of road edge at parameter t (0=vanish, 1=bottom)
+    let halfW = (ROAD_TOP_W / 2) + t * (ROAD_BOT_W - ROAD_TOP_W) / 2;
+    return VANISH_X + side * halfW;
+}
+
+// ---- DRAW SKY ----
+function drawSky() {
+    // Gradient sky — warm sunset/dusk
+    let grad = ctx.createLinearGradient(0, 0, 0, VANISH_Y + 60);
+    grad.addColorStop(0, '#1a1a2e');
+    grad.addColorStop(0.3, '#16213e');
+    grad.addColorStop(0.55, '#0f3460');
+    grad.addColorStop(0.75, '#e94560');
+    grad.addColorStop(0.9, '#f5a623');
+    grad.addColorStop(1, '#f8d568');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, W, VANISH_Y + 60);
+
+    // Sun
+    let sunX = W * 0.7;
+    let sunY = VANISH_Y - 30;
+    let sunGrad = ctx.createRadialGradient(sunX, sunY, 0, sunX, sunY, 60);
+    sunGrad.addColorStop(0, 'rgba(255,220,100,0.9)');
+    sunGrad.addColorStop(0.3, 'rgba(255,180,60,0.4)');
+    sunGrad.addColorStop(1, 'rgba(255,120,30,0)');
+    ctx.fillStyle = sunGrad;
+    ctx.fillRect(sunX - 60, sunY - 60, 120, 120);
+
+    // Clouds
+    ctx.fillStyle = 'rgba(255,255,255,0.12)';
+    let cloudOff = (score * 0.3) % (W + 200);
+    drawCloud(100 - cloudOff % (W + 200) + W, 80, 1);
+    drawCloud(300 - (cloudOff * 0.7) % (W + 200) + W, 50, 0.7);
+    drawCloud(200 - (cloudOff * 0.5) % (W + 200) + W, 120, 0.5);
+
+    // Distant city silhouette
+    ctx.fillStyle = '#0d1b2a';
+    let cityY = VANISH_Y - 10;
+    for (let i = 0; i < 20; i++) {
+        let bx = i * 28 - 10;
+        let bh = 15 + Math.sin(i * 2.3) * 12 + Math.cos(i * 1.7) * 8;
+        ctx.fillRect(bx, cityY - bh, 24, bh + 10);
+    }
+}
+
+function drawCloud(cx, cy, s) {
+    ctx.beginPath();
+    ctx.arc(cx, cy, 20 * s, 0, Math.PI * 2);
+    ctx.arc(cx + 18 * s, cy - 5 * s, 16 * s, 0, Math.PI * 2);
+    ctx.arc(cx + 34 * s, cy, 14 * s, 0, Math.PI * 2);
+    ctx.arc(cx + 14 * s, cy + 6 * s, 12 * s, 0, Math.PI * 2);
+    ctx.fill();
+}
+
+// ---- DRAW ROAD & SIDEWALKS ----
+function drawRoad() {
+    // Ground fill below road
+    ctx.fillStyle = '#2d5a27';
+    ctx.fillRect(0, VANISH_Y, W, H - VANISH_Y);
+
+    // Sidewalks (left and right)
+    let sideW = 60;
+    ctx.fillStyle = '#a0937d';
+    // Left sidewalk
+    ctx.beginPath();
+    ctx.moveTo(roadEdgeX(-1, 0) - 2, VANISH_Y);
+    ctx.lineTo(roadEdgeX(-1, 0) - sideW * 0.1, VANISH_Y);
+    ctx.lineTo(roadEdgeX(-1, 1) - sideW, GROUND_Y + 100);
+    ctx.lineTo(roadEdgeX(-1, 1), GROUND_Y + 100);
+    ctx.closePath();
+    ctx.fill();
+    // Right sidewalk
+    ctx.beginPath();
+    ctx.moveTo(roadEdgeX(1, 0) + 2, VANISH_Y);
+    ctx.lineTo(roadEdgeX(1, 0) + sideW * 0.1, VANISH_Y);
+    ctx.lineTo(roadEdgeX(1, 1) + sideW, GROUND_Y + 100);
+    ctx.lineTo(roadEdgeX(1, 1), GROUND_Y + 100);
+    ctx.closePath();
+    ctx.fill();
+
+    // Road surface
+    ctx.fillStyle = '#3a3a4a';
+    ctx.beginPath();
+    ctx.moveTo(VANISH_X - ROAD_TOP_W / 2, VANISH_Y);
+    ctx.lineTo(VANISH_X + ROAD_TOP_W / 2, VANISH_Y);
+    ctx.lineTo(VANISH_X + ROAD_BOT_W / 2, GROUND_Y + 100);
+    ctx.lineTo(VANISH_X - ROAD_BOT_W / 2, GROUND_Y + 100);
+    ctx.closePath();
+    ctx.fill();
+
+    // Road edge lines (yellow)
+    ctx.strokeStyle = '#d4a017';
+    ctx.lineWidth = 2;
+    for (let side of [-1, 1]) {
+        ctx.beginPath();
+        ctx.moveTo(roadEdgeX(side, 0), VANISH_Y);
+        ctx.lineTo(roadEdgeX(side, 1), GROUND_Y + 100);
+        ctx.stroke();
+    }
+
+    // Lane dividers (white dashes)
+    ctx.strokeStyle = 'rgba(255,255,255,0.6)';
+    ctx.lineWidth = 2;
+    let dashLen = 40;
+    let gapLen = 40;
+    let totalLen = dashLen + gapLen;
+    let scrollOff = (score * 8) % totalLen;
+
+    for (let l = -0.5; l <= 0.5; l += 1) {
+        for (let d = -1; d < 18; d++) {
+            let startD = d * totalLen + scrollOff;
+            let endD = startD + dashLen;
+            let maxD = GROUND_Y - VANISH_Y + 300;
+            let t1 = startD / maxD;
+            let t2 = endD / maxD;
+            if (t1 > 1 || t2 < 0) continue;
+            t1 = Math.max(0, t1); t2 = Math.min(1, t2);
+            let x1 = VANISH_X + l * ((ROAD_TOP_W / 3) + t1 * (ROAD_BOT_W - ROAD_TOP_W) / 3);
+            let y1 = VANISH_Y + t1 * (GROUND_Y - VANISH_Y + 100);
+            let x2 = VANISH_X + l * ((ROAD_TOP_W / 3) + t2 * (ROAD_BOT_W - ROAD_TOP_W) / 3);
+            let y2 = VANISH_Y + t2 * (GROUND_Y - VANISH_Y + 100);
+            ctx.beginPath();
+            ctx.moveTo(x1, y1);
+            ctx.lineTo(x2, y2);
+            ctx.stroke();
+        }
+    }
+}
+
+// ---- DRAW SCENERY (buildings, trees, lampposts) ----
+function drawSceneryItems() {
+    let scrollZ = (score * 8) % (60 * 80);
+
+    for (let item of scenery) {
+        let z = ((item.z - scrollZ) % (60 * 80) + 60 * 80) % (60 * 80);
+        if (z > 1100 || z < 20) continue;
+
+        let proj = projectZ(z);
+        let s = proj.scale;
+        if (s < 0.05) continue;
+
+        let edgeX = roadEdgeX(item.side, s);
+        let baseY = proj.y;
+        let offX = item.side * (item.offset + 40) * s;
+        let cx = edgeX + offX;
+
+        ctx.save();
+
+        if (item.type === 'building') {
+            let bw = item.width * s;
+            let bh = item.height * s;
+            // Main building
+            ctx.fillStyle = item.color;
+            ctx.fillRect(cx - bw / 2, baseY - bh, bw, bh);
+            // Roof
+            ctx.fillStyle = item.roofColor;
+            ctx.fillRect(cx - bw / 2 - 2 * s, baseY - bh - 4 * s, bw + 4 * s, 4 * s);
+            // Windows
+            ctx.fillStyle = '#ffeebb';
+            let winW = 5 * s, winH = 6 * s, winGapX = bw / (item.windows + 1), winGapY = bh / (item.windowRows + 1);
+            for (let row = 1; row <= item.windowRows; row++) {
+                for (let col = 1; col <= item.windows; col++) {
+                    let wx = cx - bw / 2 + col * winGapX - winW / 2;
+                    let wy = baseY - bh + row * winGapY - winH / 2;
+                    ctx.fillRect(wx, wy, winW, winH);
+                }
+            }
+            // Door
+            ctx.fillStyle = '#4a3728';
+            ctx.fillRect(cx - 4 * s, baseY - 10 * s, 8 * s, 10 * s);
+
+        } else if (item.type === 'house') {
+            let bw = item.width * 0.8 * s;
+            let bh = item.height * 0.5 * s;
+            // Walls
+            ctx.fillStyle = '#d4c5a9';
+            ctx.fillRect(cx - bw / 2, baseY - bh, bw, bh);
+            // Pitched roof
+            ctx.fillStyle = item.roofColor;
+            ctx.beginPath();
+            ctx.moveTo(cx - bw / 2 - 4 * s, baseY - bh);
+            ctx.lineTo(cx, baseY - bh - 20 * s);
+            ctx.lineTo(cx + bw / 2 + 4 * s, baseY - bh);
+            ctx.closePath();
+            ctx.fill();
+            // Window
+            ctx.fillStyle = '#87ceeb';
+            ctx.fillRect(cx - 6 * s, baseY - bh + 6 * s, 5 * s, 5 * s);
+            ctx.fillRect(cx + 1 * s, baseY - bh + 6 * s, 5 * s, 5 * s);
+            // Door
+            ctx.fillStyle = '#8b4513';
+            ctx.fillRect(cx - 3 * s, baseY - 12 * s, 6 * s, 12 * s);
+
+        } else if (item.type === 'tree') {
+            let trunkH = 20 * s;
+            let trunkW = item.trunkW * s;
+            let cr = item.canopyR * s;
+            // Trunk
+            ctx.fillStyle = '#5d4037';
+            ctx.fillRect(cx - trunkW / 2, baseY - trunkH, trunkW, trunkH);
+            // Canopy layers
+            ctx.fillStyle = item.treeGreen;
+            ctx.beginPath();
+            ctx.arc(cx, baseY - trunkH - cr * 0.3, cr, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = `hsl(120, 45%, ${32 + Math.sin(z) * 5}%)`;
+            ctx.beginPath();
+            ctx.arc(cx - cr * 0.3, baseY - trunkH - cr * 0.1, cr * 0.7, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(cx + cr * 0.3, baseY - trunkH, cr * 0.6, 0, Math.PI * 2);
+            ctx.fill();
+
+        } else if (item.type === 'bush') {
+            let br = 10 * s;
+            ctx.fillStyle = '#2d6a2d';
+            ctx.beginPath();
+            ctx.arc(cx, baseY - br * 0.8, br, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = '#3a8a3a';
+            ctx.beginPath();
+            ctx.arc(cx + br * 0.5, baseY - br * 0.5, br * 0.7, 0, Math.PI * 2);
+            ctx.fill();
+
+        } else if (item.type === 'lamppost') {
+            let poleH = 50 * s;
+            let poleW = 2.5 * s;
+            // Pole
+            ctx.fillStyle = '#555';
+            ctx.fillRect(cx - poleW / 2, baseY - poleH, poleW, poleH);
+            // Lamp arm
+            ctx.fillRect(cx, baseY - poleH, 8 * s, 2 * s);
+            // Light
+            ctx.fillStyle = '#fff8dc';
+            ctx.shadowColor = '#ffeebb';
+            ctx.shadowBlur = 20 * s;
+            ctx.beginPath();
+            ctx.arc(cx + 8 * s, baseY - poleH + 2 * s, 3 * s, 0, Math.PI * 2);
+            ctx.fill();
+            // Light cone
+            ctx.fillStyle = 'rgba(255,238,187,0.05)';
+            ctx.shadowBlur = 0;
+            ctx.beginPath();
+            ctx.moveTo(cx + 8 * s - 2 * s, baseY - poleH + 5 * s);
+            ctx.lineTo(cx + 8 * s + 2 * s, baseY - poleH + 5 * s);
+            ctx.lineTo(cx + 8 * s + 15 * s, baseY);
+            ctx.lineTo(cx + 8 * s - 15 * s, baseY);
+            ctx.closePath();
+            ctx.fill();
+        }
+
+        ctx.restore();
+    }
+}
+
+// ---- DRAW OBSTACLES ----
+function drawObstacles() {
+    let sorted = [...obstacles].sort((a, b) => b.z - a.z);
+    for (let o of sorted) {
+        if (o.z < -50 || o.z > 1200) continue;
+        let proj = projectZ(o.z);
+        let x = W / 2 + o.lane * LANE_WIDTH * proj.scale;
+        let w = o.w * proj.scale;
+        let h = o.h * proj.scale;
+        let s = proj.scale;
+
+        ctx.save();
+        if (o.type === 'barrier') {
+            // Construction barrier
+            let y = proj.y - h;
+            // Posts
+            ctx.fillStyle = '#78716c';
+            ctx.fillRect(x - w / 2, y, 4 * s, h);
+            ctx.fillRect(x + w / 2 - 4 * s, y, 4 * s, h);
+            // Planks with stripes
+            let plankH = h * 0.35;
+            for (let p = 0; p < 2; p++) {
+                let py = y + p * (h * 0.5) + 2 * s;
+                ctx.fillStyle = '#ef4444';
+                roundRect2(x - w / 2, py, w, plankH, 2 * s);
+                ctx.fillStyle = '#fafafa';
+                ctx.fillRect(x - w / 2, py + plankH * 0.4, w, plankH * 0.2);
+            }
+            // Warning light
+            ctx.fillStyle = '#fbbf24';
+            ctx.shadowColor = '#fbbf24';
+            ctx.shadowBlur = 10 * s;
+            ctx.beginPath();
+            ctx.arc(x, y - 3 * s, 3 * s, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.shadowBlur = 0;
+        } else {
+            // Overhead beam
+            let beamY = proj.y - 60 * s;
+            // Posts
+            ctx.fillStyle = '#8a8a8a';
+            ctx.fillRect(x - w / 2, beamY, 4 * s, 60 * s);
+            ctx.fillRect(x + w / 2 - 4 * s, beamY, 4 * s, 60 * s);
+            // Beam
+            ctx.fillStyle = '#f97316';
+            ctx.fillRect(x - w / 2, beamY, w, h);
+            ctx.fillStyle = '#fafafa';
+            ctx.fillRect(x - w / 2, beamY + h * 0.35, w, h * 0.15);
+            ctx.fillRect(x - w / 2, beamY + h * 0.65, w, h * 0.15);
+            // Arrow signs
+            ctx.fillStyle = '#fbbf24';
+            ctx.font = `${10 * s}px sans-serif`;
+            ctx.textAlign = 'center';
+            ctx.fillText('▼', x, beamY + h + 12 * s);
+        }
+        ctx.restore();
+    }
+}
+
+function roundRect2(x, y, w, h, r) {
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.lineTo(x + w - r, y);
+    ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+    ctx.lineTo(x + w, y + h - r);
+    ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+    ctx.lineTo(x + r, y + h);
+    ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+    ctx.lineTo(x, y + r);
+    ctx.quadraticCurveTo(x, y, x + r, y);
+    ctx.closePath();
+    ctx.fill();
+}
+
+// ---- DRAW COINS ----
+function drawCoins() {
+    let sorted = [...coins].sort((a, b) => b.z - a.z);
+    for (let c of sorted) {
+        if (c.collected || c.z < -50 || c.z > 1200) continue;
+        let proj = projectZ(c.z);
+        let x = W / 2 + c.lane * LANE_WIDTH * proj.scale;
+        let y = proj.y - 40 * proj.scale;
+        let r = 10 * proj.scale;
+        let bob = Math.sin(score * 0.3 + c.z * 0.01) * 3 * proj.scale;
+        y += bob;
+
+        ctx.save();
+        ctx.shadowColor = '#fbbf24';
+        ctx.shadowBlur = 14 * proj.scale;
+        // Outer
+        ctx.fillStyle = '#fbbf24';
+        ctx.beginPath();
+        ctx.arc(x, y, r, 0, Math.PI * 2);
+        ctx.fill();
+        // Inner ring
+        ctx.shadowBlur = 0;
+        ctx.strokeStyle = '#f59e0b';
+        ctx.lineWidth = 1.5 * proj.scale;
+        ctx.beginPath();
+        ctx.arc(x, y, r * 0.65, 0, Math.PI * 2);
+        ctx.stroke();
+        // $ sign
+        ctx.fillStyle = '#92400e';
+        ctx.font = `bold ${r * 1.1}px sans-serif`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('$', x, y + 0.5);
+        ctx.restore();
+    }
+}
+
+// ---- DRAW PLAYER (human character) ----
+function drawPlayer() {
+    let x = player.x;
+    let baseY = GROUND_Y;
+    let isSlide = player.isSliding;
+    let isJump = player.isJumping;
+    let yOff = player.y - (GROUND_Y - PLAYER_H); // jump offset (negative when jumping)
+    let run = player.runCycle;
+
+    ctx.save();
+
+    // Ground shadow
+    ctx.fillStyle = 'rgba(0,0,0,0.25)';
+    ctx.beginPath();
+    let shadowScale = isJump ? Math.max(0.5, 1 + yOff / 100) : 1;
+    ctx.ellipse(x, baseY + 2, 22 * shadowScale, 6 * shadowScale, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    if (isSlide) {
+        drawPlayerSliding(x, baseY);
+    } else {
+        drawPlayerRunning(x, baseY + yOff, run, isJump);
+    }
+
+    ctx.restore();
+}
+
+function drawPlayerRunning(x, groundY, run, isJump) {
+    // groundY = bottom of feet reference
+    let legSwing = isJump ? 0.3 : Math.sin(run) * 0.7;
+    let armSwing = isJump ? -0.4 : Math.sin(run) * 0.6;
+    let bodyBob = isJump ? 0 : Math.abs(Math.sin(run)) * 2;
+
+    let headY = groundY - 72 + bodyBob;
+    let torsoTop = groundY - 56 + bodyBob;
+    let torsoBot = groundY - 28 + bodyBob;
+    let hipY = torsoBot;
+
+    // --- LEGS ---
+    // Left leg
+    let lKneeX = x - 6 + Math.sin(run) * 10;
+    let lKneeY = hipY + 14 + Math.cos(run) * 3;
+    let lFootX = x - 4 - Math.sin(run) * 8;
+    let lFootY = groundY;
+    // Right leg (opposite phase)
+    let rKneeX = x + 6 - Math.sin(run) * 10;
+    let rKneeY = hipY + 14 - Math.cos(run) * 3;
+    let rFootX = x + 4 + Math.sin(run) * 8;
+    let rFootY = groundY;
+
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+
+    // Pants (dark jeans)
+    ctx.strokeStyle = '#2c3e6b';
+    ctx.lineWidth = 8;
+    // Left leg
+    ctx.beginPath(); ctx.moveTo(x - 5, hipY); ctx.lineTo(lKneeX, lKneeY); ctx.lineTo(lFootX, lFootY - 4); ctx.stroke();
+    // Right leg
+    ctx.beginPath(); ctx.moveTo(x + 5, hipY); ctx.lineTo(rKneeX, rKneeY); ctx.lineTo(rFootX, rFootY - 4); ctx.stroke();
+
+    // Shoes (red sneakers)
+    ctx.fillStyle = '#e74c3c';
+    ctx.beginPath();
+    ctx.ellipse(lFootX + 2, lFootY - 2, 7, 4, -0.1 - legSwing * 0.2, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.ellipse(rFootX + 2, rFootY - 2, 7, 4, -0.1 + legSwing * 0.2, 0, Math.PI * 2);
+    ctx.fill();
+    // Shoe sole
+    ctx.fillStyle = '#fff';
+    ctx.fillRect(lFootX - 4, lFootY - 1, 10, 2);
+    ctx.fillRect(rFootX - 4, rFootY - 1, 10, 2);
+
+    // --- TORSO (hoodie) ---
+    ctx.fillStyle = '#6366f1';
+    ctx.beginPath();
+    ctx.moveTo(x - 14, torsoTop + 4);
+    ctx.lineTo(x + 14, torsoTop + 4);
+    ctx.lineTo(x + 12, torsoBot + 2);
+    ctx.lineTo(x - 12, torsoBot + 2);
+    ctx.closePath();
+    ctx.fill();
+
+    // Hoodie pocket
+    ctx.fillStyle = '#5558e6';
+    ctx.fillRect(x - 8, torsoBot - 8, 16, 6);
+
+    // Hoodie strings
+    ctx.strokeStyle = '#ddd';
+    ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(x - 3, torsoTop + 8); ctx.lineTo(x - 4, torsoTop + 16 + bodyBob); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(x + 3, torsoTop + 8); ctx.lineTo(x + 4, torsoTop + 16 + bodyBob); ctx.stroke();
+
+    // --- ARMS ---
+    ctx.strokeStyle = '#6366f1'; // hoodie sleeve
+    ctx.lineWidth = 7;
+    // Left arm
+    let laElbowX = x - 16 - armSwing * 6;
+    let laElbowY = torsoTop + 18;
+    let laHandX = x - 12 + armSwing * 10;
+    let laHandY = torsoTop + 30 + Math.abs(armSwing) * 3;
+    ctx.beginPath(); ctx.moveTo(x - 13, torsoTop + 8); ctx.lineTo(laElbowX, laElbowY); ctx.stroke();
+    ctx.strokeStyle = '#6366f1';
+    ctx.lineWidth = 6;
+    ctx.beginPath(); ctx.moveTo(laElbowX, laElbowY); ctx.lineTo(laHandX, laHandY); ctx.stroke();
+    // Left hand (skin)
+    ctx.fillStyle = '#f0c8a0';
+    ctx.beginPath(); ctx.arc(laHandX, laHandY, 3.5, 0, Math.PI * 2); ctx.fill();
+
+    // Right arm
+    ctx.strokeStyle = '#6366f1';
+    ctx.lineWidth = 7;
+    let raElbowX = x + 16 + armSwing * 6;
+    let raElbowY = torsoTop + 18;
+    let raHandX = x + 12 - armSwing * 10;
+    let raHandY = torsoTop + 30 + Math.abs(armSwing) * 3;
+    ctx.beginPath(); ctx.moveTo(x + 13, torsoTop + 8); ctx.lineTo(raElbowX, raElbowY); ctx.stroke();
+    ctx.lineWidth = 6;
+    ctx.beginPath(); ctx.moveTo(raElbowX, raElbowY); ctx.lineTo(raHandX, raHandY); ctx.stroke();
+    // Right hand
+    ctx.fillStyle = '#f0c8a0';
+    ctx.beginPath(); ctx.arc(raHandX, raHandY, 3.5, 0, Math.PI * 2); ctx.fill();
+
+    // --- NECK ---
+    ctx.fillStyle = '#f0c8a0';
+    ctx.fillRect(x - 3, torsoTop - 1, 6, 7);
+
+    // --- HEAD ---
+    // Face
+    ctx.fillStyle = '#f0c8a0';
+    ctx.beginPath();
+    ctx.arc(x, headY, 13, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Hair (dark, messy)
+    ctx.fillStyle = '#2c1810';
+    ctx.beginPath();
+    ctx.arc(x, headY - 3, 13.5, Math.PI, Math.PI * 2);
+    ctx.fill();
+    // Hair tuft
+    ctx.beginPath();
+    ctx.moveTo(x - 5, headY - 15);
+    ctx.quadraticCurveTo(x - 1, headY - 20, x + 4, headY - 15);
+    ctx.quadraticCurveTo(x + 7, headY - 19, x + 10, headY - 13);
+    ctx.lineTo(x + 13, headY - 5);
+    ctx.arc(x, headY - 3, 13.5, -0.1, Math.PI + 0.1, true);
+    ctx.closePath();
+    ctx.fill();
+
+    // Side hair
+    ctx.fillRect(x - 13, headY - 5, 3, 8);
+    ctx.fillRect(x + 10, headY - 5, 3, 8);
+
+    // Eyes
+    ctx.fillStyle = '#fff';
+    ctx.beginPath(); ctx.ellipse(x - 5, headY + 1, 3.5, 3, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(x + 5, headY + 1, 3.5, 3, 0, 0, Math.PI * 2); ctx.fill();
+    // Pupils (looking forward)
+    ctx.fillStyle = '#1a1a2e';
+    ctx.beginPath(); ctx.arc(x - 4.5, headY + 1.5, 1.8, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.arc(x + 5.5, headY + 1.5, 1.8, 0, Math.PI * 2); ctx.fill();
+
+    // Eyebrows
+    ctx.strokeStyle = '#2c1810';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(x - 8, headY - 3.5); ctx.lineTo(x - 2, headY - 4); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(x + 2, headY - 4); ctx.lineTo(x + 8, headY - 3.5); ctx.stroke();
+
+    // Mouth (slight smile)
+    ctx.strokeStyle = '#b5836a';
+    ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    ctx.arc(x, headY + 5, 4, 0.1, Math.PI - 0.1);
+    ctx.stroke();
+
+    // Ears
+    ctx.fillStyle = '#e8b890';
+    ctx.beginPath(); ctx.ellipse(x - 13, headY + 1, 2.5, 4, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(x + 13, headY + 1, 2.5, 4, 0, 0, Math.PI * 2); ctx.fill();
+}
+
+function drawPlayerSliding(x, baseY) {
+    // Character sliding feet-first along the ground
+    let slideY = baseY - 12;
+
+    // Body (horizontal)
+    ctx.fillStyle = '#6366f1';
+    roundRect2(x - 28, slideY - 10, 56, 14, 5);
+
+    // Head
+    ctx.fillStyle = '#f0c8a0';
+    ctx.beginPath();
+    ctx.arc(x + 28, slideY - 6, 10, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Hair
+    ctx.fillStyle = '#2c1810';
+    ctx.beginPath();
+    ctx.arc(x + 28, slideY - 9, 10.5, Math.PI, Math.PI * 2);
+    ctx.fill();
+    ctx.fillRect(x + 18, slideY - 12, 4, 6);
+
+    // Eye
+    ctx.fillStyle = '#fff';
+    ctx.beginPath(); ctx.ellipse(x + 31, slideY - 6, 2.5, 2, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = '#1a1a2e';
+    ctx.beginPath(); ctx.arc(x + 31.5, slideY - 5.5, 1.2, 0, Math.PI * 2); ctx.fill();
+
+    // Legs (stretched out)
+    ctx.strokeStyle = '#2c3e6b';
+    ctx.lineWidth = 7;
+    ctx.beginPath(); ctx.moveTo(x - 18, slideY); ctx.lineTo(x - 34, slideY + 2); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(x - 16, slideY + 2); ctx.lineTo(x - 32, slideY + 5); ctx.stroke();
+
+    // Shoes
+    ctx.fillStyle = '#e74c3c';
+    ctx.beginPath(); ctx.ellipse(x - 36, slideY + 2, 6, 3.5, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(x - 34, slideY + 6, 6, 3.5, 0, 0, Math.PI * 2); ctx.fill();
+
+    // Arms back
+    ctx.strokeStyle = '#6366f1';
+    ctx.lineWidth = 5;
+    ctx.beginPath(); ctx.moveTo(x + 20, slideY - 4); ctx.lineTo(x + 10, slideY - 14); ctx.stroke();
+    ctx.fillStyle = '#f0c8a0';
+    ctx.beginPath(); ctx.arc(x + 10, slideY - 14, 3, 0, Math.PI * 2); ctx.fill();
+
+    // Slide sparks
+    let sparkOff = (score * 10) % 20;
+    ctx.fillStyle = 'rgba(255,200,50,0.6)';
+    for (let i = 0; i < 3; i++) {
+        let sx = x - 20 - i * 8 - sparkOff + Math.random() * 4;
+        let sy = slideY + 4 + Math.random() * 4;
+        ctx.fillRect(sx, sy, 2 + Math.random() * 3, 1.5);
+    }
+}
+
+// ---- MAIN DRAW ----
+function draw() {
+    ctx.clearRect(0, 0, W, H);
+    drawSky();
+    drawRoad();
+    drawSceneryItems();
+    drawObstacles();
+    drawCoins();
+    drawPlayer();
+}
+
+// ---- GAME LOOP ----
+function loop() {
+    update();
+    draw();
+    if (state === 'playing') frameId = requestAnimationFrame(loop);
+}
+
+function startGame() {
+    initGame();
+    document.getElementById('startScreen').classList.add('hidden');
+    document.getElementById('gameOverScreen').classList.add('hidden');
+    document.getElementById('hud').classList.remove('hidden');
+    loop();
+}
+
+function gameOver() {
+    state = 'over';
+    cancelAnimationFrame(frameId);
+    document.getElementById('hud').classList.add('hidden');
+    document.getElementById('finalScore').textContent = Math.floor(score) + 'm';
+    document.getElementById('finalCoins').textContent = coinCount;
+    document.getElementById('gameOverScreen').classList.remove('hidden');
+}
+
+// ---- CONTROLS ----
+function moveLeft() { if (player.targetLane > -1) player.targetLane--; }
+function moveRight() { if (player.targetLane < 1) player.targetLane++; }
+function jump() {
+    if (!player.isJumping) { player.isJumping = true; player.vy = JUMP_FORCE; player.isSliding = false; }
+}
+function slide() {
+    if (!player.isJumping) { player.isSliding = true; player.slideTimer = 30; }
+}
+
+document.addEventListener('keydown', (e) => {
+    if (state !== 'playing') return;
+    switch (e.key) {
+        case 'ArrowLeft': case 'a': moveLeft(); break;
+        case 'ArrowRight': case 'd': moveRight(); break;
+        case 'ArrowUp': case 'w': jump(); break;
+        case 'ArrowDown': case 's': slide(); break;
+    }
+});
+
+let touchStartX = 0, touchStartY = 0;
+canvas.addEventListener('touchstart', (e) => {
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+    e.preventDefault();
+}, { passive: false });
+
+canvas.addEventListener('touchend', (e) => {
+    if (state !== 'playing') return;
+    let dx = e.changedTouches[0].clientX - touchStartX;
+    let dy = e.changedTouches[0].clientY - touchStartY;
+    if (Math.max(Math.abs(dx), Math.abs(dy)) < 20) return;
+    if (Math.abs(dx) > Math.abs(dy)) { dx > 0 ? moveRight() : moveLeft(); }
+    else { dy < 0 ? jump() : slide(); }
+    e.preventDefault();
+}, { passive: false });
+
+document.getElementById('startBtn').addEventListener('click', startGame);
+document.getElementById('restartBtn').addEventListener('click', startGame);
+
+// Initial render
+generateScenery();
+draw();
+</script>
+</body>
+</html>
