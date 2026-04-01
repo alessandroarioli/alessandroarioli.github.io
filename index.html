@@ -3,159 +3,694 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portfolio</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <title>Alessandro Arioli — Software Engineer</title>
+    <meta name="description" content="Portfolio of Alessandro Arioli, Software Engineer based in Switzerland.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bg: #0f0f11;
+            --surface: #18181b;
+            --surface-2: #1e1e22;
+            --border: #27272a;
+            --text: #fafafa;
+            --text-muted: #a1a1aa;
+            --accent: #6366f1;
+            --accent-light: #818cf8;
+            --accent-glow: rgba(99, 102, 241, 0.15);
+            --green: #34d399;
+            --radius: 12px;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
-            font-family: 'Roboto', sans-serif;
-            margin: 0;
-            padding: 0;
-            background: #f4f4f9;
-            color: #333;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg);
+            color: var(--text);
             line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
         }
-        header {
-            background: #282c34;
-            color: #fff;
-            padding: 40px 20px;
-            text-align: center;
+
+        /* ---- NAV ---- */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 100;
+            padding: 16px 24px;
+            background: rgba(15, 15, 17, 0.8);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border);
         }
-        header img {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            margin-bottom: 20px;
-            border: 3px solid #fff;
+
+        nav .nav-inner {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
-        section {
-            padding: 40px 20px;
-            margin: 20px auto;
-            max-width: 900px;
-            background: #fff;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+        nav .logo {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--text);
+            text-decoration: none;
+            font-family: 'JetBrains Mono', monospace;
         }
-        h2 {
-            color: #282c34;
-            font-size: 1.8rem;
-            border-bottom: 2px solid #3498db;
-            display: inline-block;
-            margin-bottom: 20px;
+
+        nav .logo span {
+            color: var(--accent-light);
         }
-        ul {
+
+        nav ul {
             list-style: none;
-            padding: 0;
+            display: flex;
+            gap: 28px;
         }
-        ul li {
-            margin-bottom: 15px;
+
+        nav ul a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: color 0.2s;
         }
-        .work-item h3, .edu-item h3 {
-            color: #3498db;
-            margin: 0;
+
+        nav ul a:hover {
+            color: var(--text);
         }
-        .highlight {
-            background: #e3f2fd;
-            color: #1976d2;
-            padding: 5px 10px;
-            border-radius: 4px;
+
+        /* ---- HERO ---- */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 120px 24px 80px;
+            position: relative;
+            overflow: hidden;
         }
-        .company-logo {
-            width: 100px;
-            height: auto;
-            margin-bottom: 10px;
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 30% 40%, var(--accent-glow) 0%, transparent 50%),
+                        radial-gradient(circle at 70% 60%, rgba(52, 211, 153, 0.08) 0%, transparent 50%);
+            animation: glow-shift 12s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow-shift {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(30px, -20px); }
+        }
+
+        .hero-content {
+            position: relative;
+            text-align: center;
+            max-width: 680px;
+        }
+
+        .hero-avatar {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--border);
+            margin-bottom: 28px;
+            box-shadow: 0 0 40px var(--accent-glow);
+        }
+
+        .hero-content h1 {
+            font-size: 2.8rem;
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            line-height: 1.15;
+            margin-bottom: 16px;
+        }
+
+        .hero-content h1 .wave {
+            display: inline-block;
+            animation: wave 2.5s ease-in-out infinite;
+            transform-origin: 70% 70%;
+        }
+
+        @keyframes wave {
+            0%, 60%, 100% { transform: rotate(0deg); }
+            10%, 30% { transform: rotate(14deg); }
+            20% { transform: rotate(-8deg); }
+            40% { transform: rotate(-4deg); }
+            50% { transform: rotate(10deg); }
+        }
+
+        .hero-tagline {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            margin-bottom: 32px;
+        }
+
+        .hero-links {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .hero-links a {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-light);
+            transform: translateY(-1px);
+        }
+
+        .btn-ghost {
+            background: transparent;
+            color: var(--text-muted);
+            border: 1px solid var(--border);
+        }
+
+        .btn-ghost:hover {
+            color: var(--text);
+            border-color: var(--text-muted);
+            transform: translateY(-1px);
+        }
+
+        /* ---- SECTIONS ---- */
+        .section {
+            padding: 80px 24px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            letter-spacing: -0.02em;
+        }
+
+        .section-subtitle {
+            color: var(--text-muted);
+            margin-bottom: 40px;
+            font-size: 1rem;
+        }
+
+        /* ---- ABOUT ---- */
+        .about-text {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            line-height: 1.8;
+            max-width: 700px;
+        }
+
+        .about-text strong {
+            color: var(--text);
+        }
+
+        /* ---- EXPERIENCE ---- */
+        .timeline {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .timeline-item {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 28px;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .timeline-item:hover {
+            border-color: var(--accent);
+            box-shadow: 0 0 24px var(--accent-glow);
+        }
+
+        /* AI-powered highlight card */
+        .timeline-item.ai-powered {
+            position: relative;
+            border: 1px solid transparent;
+            background-origin: border-box;
+            background-clip: padding-box, border-box;
+            background-image:
+                linear-gradient(var(--surface), var(--surface)),
+                linear-gradient(135deg, var(--accent), #a855f7, #ec4899, var(--accent));
+            background-size: 100% 100%, 200% 200%;
+            animation: border-flow 4s ease-in-out infinite;
+        }
+
+        @keyframes border-flow {
+            0%, 100% { background-position: 0 0, 0% 50%; }
+            50% { background-position: 0 0, 100% 50%; }
+        }
+
+        .timeline-item.ai-powered:hover {
+            border-color: transparent;
+            box-shadow:
+                0 0 30px rgba(99, 102, 241, 0.2),
+                0 0 60px rgba(168, 85, 247, 0.1),
+                0 0 90px rgba(236, 72, 153, 0.05);
+        }
+
+        .ai-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            font-family: 'JetBrains Mono', monospace;
+            letter-spacing: 0.03em;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(168, 85, 247, 0.15), rgba(236, 72, 153, 0.15));
+            color: #c084fc;
+            border: 1px solid rgba(168, 85, 247, 0.3);
+            margin-bottom: 16px;
+        }
+
+        .ai-badge svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        .tag.tag-ai {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(168, 85, 247, 0.15));
+            border-color: rgba(168, 85, 247, 0.3);
+            color: #c084fc;
+        }
+
+        .timeline-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .timeline-role {
+            font-size: 1.15rem;
+            font-weight: 600;
+        }
+
+        .timeline-company {
+            color: var(--accent-light);
+            font-weight: 500;
+        }
+
+        .timeline-meta {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        .timeline-date {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            font-family: 'JetBrains Mono', monospace;
+            white-space: nowrap;
+        }
+
+        .timeline-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 16px;
+        }
+
+        .tag {
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .timeline-desc {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-top: 12px;
+            line-height: 1.7;
+        }
+
+        .timeline-desc li {
+            margin-bottom: 6px;
+            list-style: none;
+            padding-left: 16px;
+            position: relative;
+        }
+
+        .timeline-desc li::before {
+            content: '>';
+            position: absolute;
+            left: 0;
+            color: var(--accent-light);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+        }
+
+        /* ---- EDUCATION ---- */
+        .edu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .edu-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 24px;
+            transition: border-color 0.2s;
+        }
+
+        .edu-card:hover {
+            border-color: var(--accent);
+        }
+
+        .edu-card h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .edu-card p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .edu-year {
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--accent-light);
+            font-size: 0.85rem;
+            margin-bottom: 8px;
             display: block;
         }
+
+        /* ---- HOBBIES ---- */
+        .hobbies-list {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .hobby-chip {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 10px 20px;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            transition: border-color 0.2s, color 0.2s;
+        }
+
+        .hobby-chip:hover {
+            border-color: var(--accent);
+            color: var(--text);
+        }
+
+        /* ---- FOOTER ---- */
         footer {
+            padding: 40px 24px;
             text-align: center;
-            padding: 20px;
-            background: #282c34;
-            color: #fff;
+            border-top: 1px solid var(--border);
+            margin-top: 40px;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            margin-bottom: 20px;
+        }
+
+        .footer-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.2s;
+        }
+
+        .footer-links a:hover {
+            color: var(--accent-light);
+        }
+
+        footer p {
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        }
+
+        /* ---- SVG ICONS (inline) ---- */
+        .icon {
+            width: 18px;
+            height: 18px;
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        /* ---- RESPONSIVE ---- */
+        @media (max-width: 640px) {
+            .hero-content h1 {
+                font-size: 2rem;
+            }
+
+            .hero-tagline {
+                font-size: 1rem;
+            }
+
+            nav ul {
+                gap: 16px;
+            }
+
+            nav ul a {
+                font-size: 0.8rem;
+            }
+
+            .timeline-header {
+                flex-direction: column;
+            }
+
+            .section {
+                padding: 60px 20px;
+            }
         }
     </style>
 </head>
 <body>
-<header>
-    <!-- Profile Picture Placeholder -->
-    <img src="https://media.licdn.com/dms/image/v2/D4D03AQGXrVwQ51MivQ/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1669502234700?e=1747267200&v=beta&t=wpOInIMA5A2etAedLRpxgh_zQp7C9242qwni8CPDDwU" alt="Profile Picture">
-    <h1>Hello! 👋 I'm Alessandro Arioli</h1>
-    <p class="highlight">Web Developer | Problem Solver | Espresso Enthusiast</p>
-</header>
 
-<section id="summary">
-    <h2>Summary</h2>
-    <p>
-        Programming is the art of creating, and I love creating new things, from 0 to 1!
-        Hi everyone! I'm a 30 years old nerd boy that knows how to co-work with others,
-        creating software architectures while enjoying a nice Italian espresso. I'm interested in
-        Frontend development / research as well as Backend development. My most valuable skill is adaptability
-        and my ability to work as a team to build something great!
+<!-- NAV -->
+<nav>
+    <div class="nav-inner">
+        <a href="#" class="logo">&lt;<span>aa</span>/&gt;</a>
+        <ul>
+            <li><a href="#about">About</a></li>
+            <li><a href="#experience">Experience</a></li>
+            <li><a href="#education">Education</a></li>
+        </ul>
+    </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="top">
+    <div class="hero-content">
+        <img src="img/portfolio/profile.jpeg" alt="Alessandro Arioli" class="hero-avatar">
+        <h1><span class="wave">&#128075;</span> Hey, I'm Alessandro</h1>
+        <p class="hero-tagline">Software Engineer crafting web experiences from Milan. <br>( Working in Switzerland )</p>
+        <div class="hero-links">
+            <a href="https://www.linkedin.com/in/alessandro-arioli/" class="btn-primary" target="_blank" rel="noopener">
+                <svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+                LinkedIn
+            </a>
+            <a href="https://github.com/alessandroarioli" class="btn-ghost" target="_blank" rel="noopener">
+                <svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+                GitHub
+            </a>
+            <a href="mailto:ale.arioli93@gmail.com" class="btn-ghost">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                Email
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- ABOUT -->
+<section class="section" id="about">
+    <h2 class="section-title">About</h2>
+    <p class="section-subtitle">A bit about me and what I do.</p>
+    <p class="about-text">
+        I'm a <strong>software engineer</strong> based in Switzerland with a passion for building things from scratch.
+        I enjoy working across the full stack &mdash; from crafting polished <strong>React</strong> frontends to designing
+        robust <strong>backend</strong> services. I thrive in collaborative environments where pair programming
+        and clean architecture are valued. My most valuable skill is <strong>adaptability</strong>: I pick up new
+        technologies quickly and love diving into unfamiliar codebases. When I'm not coding, you'll probably
+        find me exploring the Alps or hunting for the perfect espresso.
     </p>
 </section>
 
-<section id="work-experience">
-    <h2>Work Experience</h2>
-    <ul>
-        <li class="work-item">
-            <img src="https://res.cloudinary.com/lastminute-contenthub/v1/DAM/Logos%20%2B%20fonts/SVG/corporate%20website/lastminute" alt="Lastminute.com Logo" class="company-logo">
-            <h3>Software Engineer</h3>
-            <p>Lastminute.com | Chiasso, Ticino, Switzerland | <span class="highlight">Sep 2019 - Present</span></p>
-            <!-- Company Logo Placeholder -->
-            <ul>
-                <li>Frontend: React + TypeScript, styled-components, Node.js</li>
-                <li>Strict TDD methodology, SOLID & DRY principles, Hexagonal architecture</li>
-                <li>Webpack 5 with Module Federation and micro frontends</li>
-                <li>Backend: Kotlin with functional programming, legacy module refactoring</li>
-                <li>Agile collaboration, pair programming with multi-team collaboration</li>
+<!-- EXPERIENCE -->
+<section class="section" id="experience">
+    <h2 class="section-title">Experience</h2>
+    <p class="section-subtitle">Where I've worked and what I've built.</p>
+
+    <div class="timeline">
+        <div class="timeline-item ai-powered">
+            <div class="ai-badge">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 3l1.912 5.813a2 2 0 0 0 1.275 1.275L21 12l-5.813 1.912a2 2 0 0 0-1.275 1.275L12 21l-1.912-5.813a2 2 0 0 0-1.275-1.275L3 12l5.813-1.912a2 2 0 0 0 1.275-1.275L12 3z"/>
+                    <path d="M5 3v4"/><path d="M3 5h4"/>
+                    <path d="M19 17v4"/><path d="M17 19h4"/>
+                </svg>
+                AI-Powered
+            </div>
+            <div class="timeline-header">
+                <div>
+                    <div class="timeline-role">Software Engineer</div>
+                    <div class="timeline-company">Lastminute.com</div>
+                    <div class="timeline-meta">Chiasso, Switzerland</div>
+                </div>
+                <div class="timeline-date">Sep 2019 &mdash; Present</div>
+            </div>
+            <ul class="timeline-desc">
+                <li>Building and maintaining micro frontends with React, TypeScript, and Module Federation</li>
+                <li>Backend development in Kotlin with functional programming patterns</li>
+                <li>Strict TDD, SOLID principles, and hexagonal architecture</li>
+                <li>Coordinating and managing projects across multiple teams, driving alignment and delivery</li>
+                <li>AI-assisted development with Claude Code and GitHub Copilot to accelerate delivery</li>
+                <li>Cross-team agile collaboration and pair programming</li>
             </ul>
-        </li>
-        <li class="work-item">
-            <img src="https://it.italianway.house/assets/img-logo-1acef0e1fc7bb9973946cb61f21651bc822918c96787fc028963c7cf981aabbc.svg" alt="Italianway SRL Logo" class="company-logo">
-            <h3>Ruby on Rails Developer</h3>
-            <p>Italianway SRL | Milano, Lombardy, Italy | <span class="highlight">Oct 2016 - Aug 2019</span></p>
-            <!-- Company Logo Placeholder -->
-            <ul>
-                <li>Backend: Ruby, Rails 5</li>
-                <li>Frontend: jQuery, Webpack (ES6), Vue.js 2</li>
-                <li>DevOps: AWS S3, Lambda, EC2, Postgres, Redis</li>
-                <li>SCRUM, standups, code reviews, and sprints</li>
+            <div class="timeline-tags">
+                <span class="tag">React</span>
+                <span class="tag">TypeScript</span>
+                <span class="tag">Kotlin</span>
+                <span class="tag">Node.js</span>
+                <span class="tag">Webpack 5</span>
+                <span class="tag">Micro Frontends</span>
+                <span class="tag tag-ai">Claude Code</span>
+                <span class="tag tag-ai">GitHub Copilot</span>
+            </div>
+        </div>
+
+        <div class="timeline-item">
+            <div class="timeline-header">
+                <div>
+                    <div class="timeline-role">Ruby on Rails Developer</div>
+                    <div class="timeline-company">Italianway SRL</div>
+                    <div class="timeline-meta">Milan, Italy</div>
+                </div>
+                <div class="timeline-date">Oct 2016 &mdash; Aug 2019</div>
+            </div>
+            <ul class="timeline-desc">
+                <li>Full-stack development with Ruby on Rails 5 and Vue.js 2</li>
+                <li>Frontend modernization with Webpack and ES6</li>
+                <li>Infrastructure on AWS (S3, Lambda, EC2) with PostgreSQL and Redis</li>
             </ul>
-        </li>
-        <li class="work-item">
-            <img src="https://www.smau.it/Imported/PartnerProfile/image-thumb__11690__partner-show-image/kuldat_blue_transparent_38662.jpeg" alt="Kuldat Logo" class="company-logo">
-            <h3>Python Developer</h3>
-            <p>Kuldat | Milano, Italy | <span class="highlight">Nov 2015 - Sep 2016</span></p>
-            <!-- Company Logo Placeholder -->
-            <ul>
-                <li>Backend: Pyramid, Flask, SQLAlchemy, Celery</li>
-                <li>Big Data: Scraping with Selenium, XPath</li>
-                <li>Databases: MongoDB, PostgreSQL, Redis</li>
+            <div class="timeline-tags">
+                <span class="tag">Ruby</span>
+                <span class="tag">Rails</span>
+                <span class="tag">Vue.js</span>
+                <span class="tag">AWS</span>
+                <span class="tag">PostgreSQL</span>
+            </div>
+        </div>
+
+        <div class="timeline-item">
+            <div class="timeline-header">
+                <div>
+                    <div class="timeline-role">Python Developer</div>
+                    <div class="timeline-company">Kuldat</div>
+                    <div class="timeline-meta">Milan, Italy</div>
+                </div>
+                <div class="timeline-date">Nov 2015 &mdash; Sep 2016</div>
+            </div>
+            <ul class="timeline-desc">
+                <li>Backend services with Pyramid, Flask, and SQLAlchemy</li>
+                <li>Big data scraping pipelines with Selenium and XPath</li>
+                <li>Multi-database architecture: MongoDB, PostgreSQL, Redis</li>
             </ul>
-        </li>
-    </ul>
+            <div class="timeline-tags">
+                <span class="tag">Python</span>
+                <span class="tag">Flask</span>
+                <span class="tag">Selenium</span>
+                <span class="tag">MongoDB</span>
+                <span class="tag">Celery</span>
+            </div>
+        </div>
+    </div>
 </section>
 
-<section id="education">
-    <h2>Education</h2>
-    <ul>
-        <li class="edu-item">
-            <img src="https://www.unimib.it/sites/default/files/logo.png" class="company-logo">
-            <h3>Economic, Business/Commerce, General</h3>
-            <p>Università degli Studi di Milano-Bicocca | <span class="highlight">2014</span></p>
-        </li>
-        <li class="edu-item">
+<!-- EDUCATION -->
+<section class="section" id="education">
+    <h2 class="section-title">Education</h2>
+    <p class="section-subtitle">Where I studied.</p>
+
+    <div class="edu-grid">
+        <div class="edu-card">
+            <span class="edu-year">2015</span>
+            <h3>Economics &amp; Business</h3>
+            <p>Universit&agrave; degli Studi di Milano-Bicocca</p>
+        </div>
+        <div class="edu-card">
+            <span class="edu-year">2012</span>
             <h3>High School Diploma</h3>
-            <p>Scientific Institute I.I.S. Alessandrini di Abbiategrasso | <span class="highlight">2012</span></p>
-        </li>
-    </ul>
+            <p>I.I.S. Alessandrini, Abbiategrasso</p>
+        </div>
+    </div>
 </section>
 
-<section id="hobbies">
-    <h2>Hobbies</h2>
-    <p>Travelling, biking, photography, and eating sushi.</p>
+<!-- HOBBIES -->
+<section class="section" id="hobbies">
+    <h2 class="section-title">When I'm offline</h2>
+    <p class="section-subtitle">Things I enjoy outside of work.</p>
+    <div class="hobbies-list">
+        <span class="hobby-chip">Travelling</span>
+        <span class="hobby-chip">Mountain Biking</span>
+        <span class="hobby-chip">Photography</span>
+        <span class="hobby-chip">Sushi</span>
+        <span class="hobby-chip">Espresso</span>
+    </div>
 </section>
 
+<!-- FOOTER -->
 <footer>
-    <p>© 2025 My Portfolio | Built with 💻 and ☕</p>
+    <div class="footer-links">
+        <a href="https://github.com/alessandroarioli" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://www.linkedin.com/in/alessandro-arioli/" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="mailto:alessandro.arioli.work@gmail.com">Email</a>
+    </div>
+    <p>&copy; 2025 Alessandro Arioli</p>
 </footer>
+
 </body>
 </html>
