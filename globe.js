@@ -151,7 +151,7 @@
             d3.timer(() => {
                 if (!rotating) return;
                 const r = projection.rotate();
-                projection.rotate([r[0] + 0.18, r[1]]);
+                projection.rotate([r[0] + 0.10, r[1]]);
                 update();
             });
 
