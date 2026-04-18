@@ -441,6 +441,47 @@
             color: var(--text);
         }
 
+        /* ---- TRAVEL GLOBE ---- */
+        #globe-wrap {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px 0 10px;
+        }
+
+        #globe-svg {
+            border-radius: 50%;
+            cursor: grab;
+        }
+
+        #globe-svg:active {
+            cursor: grabbing;
+        }
+
+        #globe-countries {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 24px;
+        }
+
+        .country-pill {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 6px 14px;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-family: 'JetBrains Mono', monospace;
+            transition: border-color 0.2s, color 0.2s;
+        }
+
+        .country-pill:hover {
+            border-color: var(--accent);
+            color: var(--text);
+        }
+
         /* ---- FOOTER ---- */
         footer {
             padding: 40px 24px;
@@ -813,6 +854,16 @@
     </div>
 </section>
 
+<!-- TRAVEL GLOBE -->
+<section class="section" id="travel">
+    <h2 class="section-title">🌍 Been There</h2>
+    <p class="section-subtitle">Countries I've set foot in — 19 and counting. ✈️</p>
+    <div id="globe-wrap">
+        <svg id="globe-svg"></svg>
+    </div>
+    <div id="globe-countries"></div>
+</section>
+
 <!-- FOOTER -->
 <footer>
     <div class="footer-links">
@@ -820,8 +871,11 @@
         <a href="https://www.linkedin.com/in/alessandro-arioli/" target="_blank" rel="noopener">LinkedIn</a>
         <a href="mailto:alessandro.arioli.work@gmail.com">Email</a>
     </div>
-    <p>&copy; 2025 Alessandro Arioli</p>
+    <p>&copy; 2026 Alessandro Arioli</p>
 </footer>
 
+<script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/topojson-client@3/dist/topojson-client.min.js"></script>
+<script src="globe.js"></script>
 </body>
 </html>
