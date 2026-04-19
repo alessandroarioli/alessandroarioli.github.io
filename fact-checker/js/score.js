@@ -69,6 +69,20 @@ function paperSignal(paper) {
     return 'neutral';
 }
 
+function crossRefSignal(paper) {
+    const title = (paper.title?.[0] || '').toLowerCase();
+    const journal = (paper['container-title']?.[0] || '').toLowerCase();
+    const text = title + ' ' + journal;
+    const debunkWords = ['false','misinformation','myth','pseudoscience','no evidence','disproven','ineffective','harmful','debunk','conspiracy','hoax','fabricated'];
+    const supportWords = ['evidence','confirmed','effective','proven','safe','consensus','demonstrated','validated','verified','scientific'];
+    let d = 0, s = 0;
+    debunkWords.forEach(w => { if (text.includes(w)) d++; });
+    supportWords.forEach(w => { if (text.includes(w)) s++; });
+    if (d > s) return 'debunking';
+    if (s > d) return 'supporting';
+    return 'neutral';
+}
+
 function pubmedSignal(article) {
     const text = ((article.title || '') + ' ' + (article.source || '')).toLowerCase();
     const debunkWords = ['false','misinformation','myth','ineffective','harmful','no evidence','disproven','pseudoscience','adverse','risk','danger','toxicity'];
@@ -82,7 +96,7 @@ function pubmedSignal(article) {
 }
 
 // ── SCORE CALCULATION ─────────────────────────────────────────────────────────
-function calcScore(claims, wikiExtract, guardianArticles, sciencePapers, pubmedArticles) {
+function calcScore(claims, wikiExtract, guardianArticles, sciencePapers, pubmedArticles, semanticPapers) {
     const probs = [];
 
     // 1. Google Fact Check ratings (highest authority — explicit verdicts)
@@ -139,6 +153,19 @@ function calcScore(claims, wikiExtract, guardianArticles, sciencePapers, pubmedA
         let debunking = 0, supporting = 0;
         for (const article of pubmedArticles) {
             const sig = pubmedSignal(article);
+            if (sig === 'debunking') debunking++;
+            else if (sig === 'supporting') supporting++;
+        }
+        if (debunking > 0 || supporting > 0) {
+            probs.push((debunking / (debunking + supporting)) * 0.5);
+        }
+    }
+
+    // 6. CrossRef papers — half weight
+    if (semanticPapers && semanticPapers.length > 0) {
+        let debunking = 0, supporting = 0;
+        for (const paper of semanticPapers) {
+            const sig = crossRefSignal(paper);
             if (sig === 'debunking') debunking++;
             else if (sig === 'supporting') supporting++;
         }

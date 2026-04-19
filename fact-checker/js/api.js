@@ -56,6 +56,19 @@ async function fetchOpenAlex(query) {
     return res.json();
 }
 
+async function fetchCrossRef(query) {
+    // CrossRef REST API: free, no key needed, full CORS support, 130M+ scholarly works
+    const url = `https://api.crossref.org/works?query=${encodeURIComponent(query)}&rows=5&select=title,DOI,published,container-title,is-referenced-by-count,author&mailto=fact-checker@portfolio`;
+    const res = await fetch(url);
+    if (res.status === 429) {
+        console.warn('CrossRef API rate-limited (429). Results skipped.');
+        return [];
+    }
+    if (!res.ok) throw new Error(`CrossRef API error: ${res.status}`);
+    const data = await res.json();
+    return data?.message?.items || [];
+}
+
 async function fetchPubMed(query) {
     // NCBI E-utilities: free, no key needed, CORS-friendly, 3 req/sec
     const searchUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=${encodeURIComponent(query)}&retmax=5&retmode=json&sort=relevance`;

@@ -1,12 +1,5 @@
 // ── HTML RENDER HELPERS ───────────────────────────────────────────────────────
-
-function escHtml(str) {
-    return String(str)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;');
-}
+// escHtml is defined in config.js (loaded first)
 
 function renderVerdictCard(fakeProb, claim, sourceCount, hasFactChecks) {
     const vClass = verdictClass(fakeProb);
@@ -208,6 +201,47 @@ function renderOpenAlex(papers) {
         <div class="science-papers">${items}</div>
     </div>`;
 }
+
+function renderCrossRef(papers) {
+    if (!papers || papers.length === 0) return '';
+
+    const items = papers.map(paper => {
+        const title = paper.title?.[0] || 'Untitled';
+        const doi = paper.DOI;
+        const url = doi ? `https://doi.org/${doi}` : '#';
+        const year = paper.published?.['date-parts']?.[0]?.[0] || '';
+        const journal = paper['container-title']?.[0] || '';
+        const citations = paper['is-referenced-by-count'] ?? 0;
+        const authors = (paper.author || []).slice(0, 2).map(a => a.family || a.name || '').filter(Boolean).join(', ');
+        const authorStr = authors + ((paper.author?.length > 2) ? ' et al.' : '');
+        const signal = crossRefSignal(paper);
+        const badgeClass = { debunking: 'rating-false', supporting: 'rating-true', neutral: 'rating-unknown' }[signal];
+        const badgeLabel = { debunking: '❌ Challenges claim', supporting: '✅ Supports claim', neutral: '📄 Related research' }[signal];
+
+        return `
+        <a href="${escHtml(url)}" target="_blank" rel="noopener" class="science-paper">
+            <div class="science-paper-body">
+                <div class="science-paper-title">${escHtml(title)}</div>
+                <div class="science-paper-meta">${authorStr ? escHtml(authorStr) + ' · ' : ''}${year}${journal ? ' · ' + escHtml(journal) : ''}</div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:4px;align-items:flex-end;flex-shrink:0;">
+                <span class="source-rating ${badgeClass}" style="font-size:0.68rem;">${badgeLabel}</span>
+                <span class="science-cite">📎 ${citations.toLocaleString()} citations</span>
+            </div>
+        </a>`;
+    }).join('');
+
+    return `
+    <div class="science-card" style="border-left-color:#7c3aed;">
+        <h3 style="color:#a78bfa;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+            CrossRef — 130M+ scholarly works
+        </h3>
+        <div class="science-papers">${items}</div>
+    </div>`;
+}
+
+
 
 function renderPubMed(articles) {
     if (!articles || articles.length === 0) return '';

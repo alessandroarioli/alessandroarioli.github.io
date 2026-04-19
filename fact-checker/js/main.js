@@ -16,7 +16,7 @@ async function checkFact() {
     document.getElementById('result').classList.remove('visible');
     const loader = document.getElementById('loader');
     loader.classList.add('visible');
-    ['step-1', 'step-2', 'step-3', 'step-4', 'step-5', 'step-6'].forEach(id => {
+    ['step-1', 'step-2', 'step-3', 'step-4', 'step-5', 'step-6', 'step-7'].forEach(id => {
         document.getElementById(id).className = 'loader-step';
     });
 
@@ -65,9 +65,13 @@ async function checkFact() {
         doneStep('step-5');
 
         await activateStep('step-6', 600);
-        const { score, sourceCount, hasFactChecks } = calcScore(claims, wiki?.extract, guardianArticles, sciencePapers, pubmedArticles);
-        await new Promise(r => setTimeout(r, 400));
+        const semanticPapers = await fetchCrossRef(claim).catch(() => []);
         doneStep('step-6');
+
+        await activateStep('step-7', 700);
+        const { score, sourceCount, hasFactChecks } = calcScore(claims, wiki?.extract, guardianArticles, sciencePapers, pubmedArticles, semanticPapers);
+        await new Promise(r => setTimeout(r, 400));
+        doneStep('step-7');
 
         loader.classList.remove('visible');
 
@@ -77,19 +81,21 @@ async function checkFact() {
         const guardianArea = document.getElementById('guardian-area');
         const scienceArea  = document.getElementById('science-area');
         const pubmedArea   = document.getElementById('pubmed-area');
+        const semanticArea = document.getElementById('semantic-area');
 
         let errorHtml = '';
         if (apiError) {
             errorHtml = `<div class="error-card"><strong>⚠ Google Fact Check API error</strong>${escHtml(apiError)} — results based on Wikipedia only.</div>`;
         }
 
-        if (!hasFactChecks && !wiki && guardianArticles.length === 0 && sciencePapers.length === 0 && pubmedArticles.length === 0) {
+        if (!hasFactChecks && !wiki && guardianArticles.length === 0 && sciencePapers.length === 0 && pubmedArticles.length === 0 && semanticPapers.length === 0) {
             verdictArea.innerHTML = errorHtml + `<div class="no-results"><h3>😕 No results found</h3><p>We couldn't find any fact-checks or Wikipedia articles related to this claim.<br>Try rephrasing it, or check sources like <a href="https://www.snopes.com" target="_blank" rel="noopener" style="color:var(--accent-light)">Snopes</a> or <a href="https://www.politifact.com" target="_blank" rel="noopener" style="color:var(--accent-light)">PolitiFact</a> directly.</p></div>`;
             sourcesArea.innerHTML = '';
             wikiArea.innerHTML = '';
             guardianArea.innerHTML = '';
             scienceArea.innerHTML = '';
             pubmedArea.innerHTML = '';
+            semanticArea.innerHTML = '';
         } else {
             verdictArea.innerHTML  = errorHtml + renderVerdictCard(score, claim, sourceCount, hasFactChecks);
             sourcesArea.innerHTML  = renderSources(claims);
@@ -97,6 +103,7 @@ async function checkFact() {
             guardianArea.innerHTML = renderGuardianNews(guardianArticles);
             scienceArea.innerHTML  = renderOpenAlex(sciencePapers);
             pubmedArea.innerHTML   = renderPubMed(pubmedArticles);
+            semanticArea.innerHTML = renderCrossRef(semanticPapers);
             requestAnimationFrame(() => animateVerdictGauge(score));
         }
 

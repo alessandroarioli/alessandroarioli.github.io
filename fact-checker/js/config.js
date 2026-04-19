@@ -1,4 +1,13 @@
 // ── CONFIG & API KEY MANAGEMENT ──────────────────────────────────────────────
+
+function escHtml(str) {
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+}
+
 const LS_KEY = 'fc_gapi_key';
 const LS_GUARDIAN_KEY = 'fc_guardian_key';
 const DEFAULT_API_KEY = 'AIzaSyArlGUdPs8i6_nBZmK_0UQx8I-cUBQqEG0';
