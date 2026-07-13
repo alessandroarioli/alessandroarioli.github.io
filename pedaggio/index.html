@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pedaggio — quanto costa il tuo viaggio?</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h1>🛣️ Pedaggio</h1>
+    <p class="tagline">Confronta i percorsi: pedaggi, carburante, tempo.</p>
+  </header>
+
+  <main>
+    <!-- API key gate -->
+    <section id="key-panel" class="card hidden">
+      <h2>HERE API key</h2>
+      <p>Serve una API key di <strong>HERE</strong> (platform.here.com, piano gratuito). La chiave resta solo nel tuo browser (localStorage).</p>
+      <div class="row">
+        <input type="password" id="api-key-input" placeholder="La tua HERE API key" autocomplete="off" />
+        <button id="save-key-btn">Salva</button>
+      </div>
+    </section>
+
+    <!-- Search form -->
+    <section id="search-panel" class="card hidden">
+      <div class="row">
+        <input type="text" id="origin" placeholder="Partenza (es. Milano)" />
+        <input type="text" id="destination" placeholder="Arrivo (es. Roma)" />
+        <button id="go-btn">Calcola</button>
+      </div>
+      <div class="row mode-row">
+        <label class="radio-label"><input type="radio" name="detail-mode" value="simple" checked /> Solo pedaggio</label>
+        <label class="radio-label"><input type="radio" name="detail-mode" value="full" /> Analisi completa (carburante + uscite)</label>
+      </div>
+      <details class="fuel-opts hidden" id="fuel-opts">
+        <summary>Opzioni carburante</summary>
+        <div class="row">
+          <label>Consumo (L/100km) <input type="number" id="consumption" value="6.5" step="0.1" min="1" /></label>
+          <label>Prezzo €/L <input type="number" id="fuel-price" value="1.75" step="0.01" min="0.5" /></label>
+        </div>
+      </details>
+      <p id="status" class="status"></p>
+      <button id="change-key-btn" class="link-btn">Cambia API key</button>
+    </section>
+
+    <!-- Results -->
+    <section id="results" class="hidden">
+      <div id="map"></div>
+      <div id="routes-list"></div>
+    </section>
+  </main>
+
+  <footer>
+    <p>Percorsi e pedaggi da HERE Routing API · Mappa © OpenStreetMap contributors. Prezzi stimati: verifica sempre sul sito del gestore autostradale.</p>
+  </footer>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
